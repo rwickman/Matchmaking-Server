@@ -5,6 +5,8 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include <queue>
+#include <nlohmann/json.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -50,7 +52,23 @@ class tcp_connection
     void handle_write(const boost::system::error_code& /*error*/,
         size_t /*bytes_transferred*/)
     {
-      std::cout << "HNDLE WRITE" << std::endl;
+    }
+
+    void handle_read(const boost::system::error_code& error,
+        size_t bytes_transferred)
+    {
+      if (error && error != boost::asio::error::eof)
+      {
+        std::cout << "Error: " << error.message() << "\n";
+	return;
+      }
+      std::string client_message;
+      {
+        std::stringstream ss;
+        ss << &message_;
+        ss.flush();
+        client_message = ss.str();
+      }
     }
   
     tcp::socket socket_;
