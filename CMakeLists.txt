@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.10)
 project(Matchmaking-Server)
 
 # Add Boost library
-find_package(Boost REQUIRED system thread regex)
+find_package(Boost 1.67.0 REQUIRED system thread regex)
 
 # Add to search path
 include_directories(${Boost_INCLUDE_DIR})
