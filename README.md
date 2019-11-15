@@ -9,8 +9,3 @@ cd boost_1_71_0
 ./bootstrap.sh --prefix=/usr && ./b2 stage -j 2 threading=multi link=shared
 sudo ./b2 install threading=multi link=shared && ln -svf detail/sha1.hpp /usr/include/boost/uuid/sha1.hpp
 ```
-
-Install JSON library used by server:
-```shell
-sudo apt install nlohmann-json-dev
-```
