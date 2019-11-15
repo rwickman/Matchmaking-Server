@@ -9,10 +9,15 @@ find_package(Boost 1.67.0 REQUIRED system thread regex)
 # Add to search path
 include_directories(${Boost_INCLUDE_DIR})
 
-# add the executable
-add_executable(Matchmaking-Server server_asio.cpp)
-add_executable(Matchmaking-Client client_asio.cpp)
+add_subdirectory(server)
 
-target_link_libraries(Matchmaking-Server PUBLIC ${Boost_LIBRARIES})
-target_link_libraries(Matchmaking-Client PUBLIC ${Boost_LIBRARIES})
+# add the executable
+add_executable(Server server_asio.cpp)
+add_executable(Client client_asio.cpp)
+
+target_link_libraries(Server PUBLIC 
+                      ${Boost_LIBRARIES}
+		      MatchmakingServer)
+
+target_link_libraries(Client PUBLIC ${Boost_LIBRARIES})
 
