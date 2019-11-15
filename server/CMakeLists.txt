@@ -1,0 +1,4 @@
+add_library(MatchmakingServer matchmaking_server.cpp)
+add_library(TCPConnection tcp_connection.cpp)
+
+target_link_libraries(MatchmakingServer PUBLIC TCPConnection)
