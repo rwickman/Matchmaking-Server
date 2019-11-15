@@ -11,15 +11,15 @@ MatchmakingServer::MatchmakingServer(boost::asio::io_context& io_context)
 
 void MatchmakingServer::start_accept()
 {
-    tcp_connection::pointer new_connection =
-      tcp_connection::create(io_context_);
+    boost::shared_ptr<TCPConnection> new_connection =
+      TCPConnection::create(io_context_);
 
     acceptor_.async_accept(new_connection->socket(),
-        boost::bind(&tcp_server::handle_accept, this, new_connection,
+        boost::bind(&MatchmakingServer::handle_accept, this, new_connection,
           boost::asio::placeholders::error));
 }
 
-void MatchmakingServer::handle_accept(TCPConnection::pointer new_connection,
+void MatchmakingServer::handle_accept(boost::shared_ptr<TCPConnection> new_connection,
 		const boost::system::error_code& error)
 {
   if (!error)

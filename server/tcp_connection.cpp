@@ -14,9 +14,10 @@ TCPConnection::TCPConnection(boost::asio::io_context& io_context) : socket_(io_c
 {
 }
 
-pointer TCPConnection::create(boost::asio::io_context& io_context)
+boost::shared_ptr<TCPConnection> 
+TCPConnection::create(boost::asio::io_context& io_context)
 {
-  return pointer(new tcp_connection(io_context));
+  return boost::shared_ptr<TCPConnection>(new TCPConnection(io_context));
 }
 
 tcp::socket& TCPConnection::socket()
@@ -26,10 +27,12 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-    message_ = make_daytime_string();
-
-    boost::asio::async_write(socket_, boost::asio::buffer(message_),
-        boost::bind(&tcp_connection::handle_write, shared_from_this(),
+    nlohmann::json msg_json;
+    msg_json["IP"] = "localhost";
+    msg_json["Other"] = "What is up dog?";
+    std::string msg = msg_json.dump(); 
+    boost::asio::async_write(socket_, boost::asio::buffer(msg),
+        boost::bind(&TCPConnection::handle_write, shared_from_this(),
           boost::asio::placeholders::error,
           boost::asio::placeholders::bytes_transferred));
 }

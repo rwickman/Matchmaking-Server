@@ -1,6 +1,7 @@
 #include <iostream>
 #include <boost/array.hpp>
 #include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
 
 using boost::asio::ip::tcp;
 
@@ -22,7 +23,11 @@ int main(int argc, char* argv[])
 
     tcp::socket socket(io_context);
     boost::asio::connect(socket, endpoints);
-
+    
+    nlohmann::json j;
+    j["User ID"] = "123456";
+    j["Game Type"] = "Elimination";
+    
     for (;;)
     {
       boost::array<char, 128> buf;
@@ -34,8 +39,13 @@ int main(int argc, char* argv[])
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-
-      std::cout.write(buf.data(), len);
+      
+      std::string server_str(buf.data(), len);
+      nlohmann::json server_rsp = nlohmann::json::parse(server_str);
+      std::string ip = server_rsp["IP"].get<std::string>();
+      std::cout << "localhost" << std::endl;
+      std::cout << ip << std::endl;
+      //std::cout.write(buf.data(), len);
     }
   }
   catch (std::exception& e)

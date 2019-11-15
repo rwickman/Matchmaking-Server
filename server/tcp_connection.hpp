@@ -1,10 +1,13 @@
 #ifndef MATCHMAKING_TCP_CONNECTION_HPP
 #define MATCHMAKING_TCP_CONNECTION_HPP
 
+#include <string>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
 #include <boost/asio.hpp>
+#include <nlohmann/json.hpp>
+
 
 namespace Matchmaking
 {
@@ -15,9 +18,7 @@ class TCPConnection
   : public boost::enable_shared_from_this<TCPConnection>
 {
 public:
-  typedef boost::shared_ptr<TCPConnection> pointer;
-
-  static pointer create(boost::asio::io_context& io_context);
+  static boost::shared_ptr<TCPConnection> create(boost::asio::io_context& io_context);
 
   tcp::socket& socket();
 
