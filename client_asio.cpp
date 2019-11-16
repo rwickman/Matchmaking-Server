@@ -7,7 +7,7 @@ using boost::asio::ip::tcp;
 
 int main(int argc, char* argv[])
 {
-  try
+ try
   {
     if (argc != 2)
     {
@@ -26,25 +26,27 @@ int main(int argc, char* argv[])
     
     nlohmann::json j;
     j["User ID"] = "123456";
-    j["Game Type"] = "Elimination";
+    j["Game Type"] = 0;
+    std::cout << sizeof(j.dump()) << std::endl;
     
     for (;;)
     {
-      boost::array<char, 128> buf;
+      //boost::array<char, 128> buf;
       boost::system::error_code error;
+      size_t bytes_written = socket.write_some(boost::asio::buffer(j.dump()));
+      //size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
-      size_t len = socket.read_some(boost::asio::buffer(buf), error);
-
+/*
       if (error == boost::asio::error::eof)
         break; // Connection closed cleanly by peer.
       else if (error)
         throw boost::system::system_error(error); // Some other error.
-      
-      std::string server_str(buf.data(), len);
-      nlohmann::json server_rsp = nlohmann::json::parse(server_str);
-      std::string ip = server_rsp["IP"].get<std::string>();
-      std::cout << "localhost" << std::endl;
-      std::cout << ip << std::endl;
+  */    
+      //std::string server_str(buf.data(), len);
+      //nlohmann::json server_rsp = nlohmann::json::parse(server_str);
+      //std::string ip = server_rsp["IP"].get<std::string>();
+      //std::cout << "localhost" << std::endl;
+      //std::cout << ip << std::endl;
       //std::cout.write(buf.data(), len);
     }
   }
