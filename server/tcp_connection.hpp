@@ -2,6 +2,7 @@
 #define MATCHMAKING_TCP_CONNECTION_HPP
 
 #include <string>
+#include <array>
 #include <boost/bind.hpp>
 #include <boost/shared_ptr.hpp>
 #include <boost/enable_shared_from_this.hpp>
@@ -27,11 +28,15 @@ public:
 private:
   TCPConnection(boost::asio::io_context& io_context); 
 
+  void handle_read_join(const boost::system::error_code& error,
+      size_t bytes_transferred);
+  
   void handle_write(const boost::system::error_code& /*error*/,
       size_t /*bytes_transferred*/);
 
+  
   tcp::socket socket_;
-  std::string message_;
+  std::array<char,128>  recv_buf_;
 };
 
 }
