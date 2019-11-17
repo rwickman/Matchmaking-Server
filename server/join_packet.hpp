@@ -3,9 +3,10 @@
 
 
 #include <string>
+#include <nlohmann/json.hpp>
 
 #include "packet.hpp"
-#include <nlohmann/json.hpp>
+#include "gametype.hpp"
 
 namespace Matchmaking
 {
@@ -15,9 +16,6 @@ class JoinPacket : public Packet
 public:
   enum { header_length = 8 };
   enum { max_body_length = 512 };
-  enum GameType {
-    ELIMINATION = 0,
-  };
 
   JoinPacket();
 

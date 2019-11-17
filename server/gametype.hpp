@@ -1,0 +1,8 @@
+#ifndef MATCHMAKING_GAMETYPE_HPP
+#define MATCHMAKING_GAMETYPE_HPP
+
+enum GameType {
+  Deathmatch,
+};
+
+#endif // MATCHMAKING_GAMETYPE_HPP

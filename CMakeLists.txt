@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 # set the project name
-project(Matchmaking-Server)
+project(Matchmaking-Server CXX)
 
 # Add Boost library
 find_package(Boost 1.67.0 REQUIRED system thread regex)
