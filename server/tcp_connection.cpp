@@ -19,46 +19,64 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-  boost::asio::async_read(socket_,
-	boost::asio::buffer(recv_buf_, 128),
-	boost::bind(
-	  &TCPConnection::handle_read_join, shared_from_this(),
-	  boost::asio::placeholders::error,
-	  boost::asio::placeholders::bytes_transferred));
-  
-
-    /*
-    nlohmann::json msg_json;
-    std::string msg = msg_json.dump(); 
-    boost::asio::async_write(socket_, boost::asio::buffer(msg),
-        boost::bind(&TCPConnection::handle_write, shared_from_this(),
-          boost::asio::placeholders::error,
-          boost::asio::placeholders::bytes_transferred));
-  */
+  do_read_join_header();	
 }
 
-void TCPConnection::handle_read_join(const boost::system::error_code& error, 
-		size_t bytes_transferred)
+void TCPConnection::do_read_join_header()
 {
-  std::cout << "HANDLED READ" << std::endl;
+  auto self(shared_from_this());
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
+      [this, self](boost::system::error_code ec, std::size_t /*length*/)
+      {
+        if (!ec && join_packet_.decode_header())
+        {
+          do_read_join_body();
+        }
+        else
+        {
+	  std::cerr << "ERROR GETTING HEADER FOR JOIN" << std::endl;
+        }
+      });
+/*  std::cout << "HANDLED READ" << std::endl;
   try
   {
     if (!error && bytes_transferred > 0)
     {
-      std::string join_str = recv_buf_.data();
+      std::string join_str(recv_buf_.data());
+      std::cout << "ABOUT TO PARSE: " << join_str << std::endl;
       nlohmann::json join_json = nlohmann::json::parse(join_str);
       // Consider making this a class later on
       std::string user_id = join_json["User ID"].get<std::string>();
       int req_game_type = join_json["Game Type"].get<int>();
-      std::cout << user_id << std::endl;
-      std::cout << req_game_type << std::endl;
+      std::cout << "USER ID: " << user_id << std::endl;
+      std::cout << "GAME TYPE: " << req_game_type << std::endl;
     }
   }
   catch(std::exception& e)
   {
     // TODO: Log this message to a file
     std::cerr << e.what() << std::endl;
-  }
+  }*/
+}
+
+void TCPConnection::do_read_join_body()
+{
+  auto self(shared_from_this());
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(join_packet_.body(), join_packet_.body_length()),
+      [this, self](boost::system::error_code ec, std::size_t /*bytes transferred*/)
+      {
+        if (!ec)
+	{
+	  if (join_packet_.decode_join())
+	  {
+	    std::cout << "USER ID: " << join_packet_.get_user_id() << std::endl;
+	    std::cout << "Game Type: " << join_packet_.get_game_type() << std::endl;
+	    // Perform other callback here
+	  }
+	}
+      });
 }
 
 void TCPConnection::handle_write(const boost::system::error_code& /*error*/, 

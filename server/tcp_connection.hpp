@@ -9,6 +9,7 @@
 #include <boost/asio.hpp>
 #include <nlohmann/json.hpp>
 
+#include "join_packet.hpp"
 
 namespace Matchmaking
 {
@@ -28,15 +29,16 @@ public:
 private:
   TCPConnection(boost::asio::io_context& io_context); 
 
-  void handle_read_join(const boost::system::error_code& error,
-      size_t bytes_transferred);
+  void do_read_join_header();
   
+  void do_read_join_body();
+
   void handle_write(const boost::system::error_code& /*error*/,
       size_t /*bytes_transferred*/);
 
   
   tcp::socket socket_;
-  std::array<char,128>  recv_buf_;
+  JoinPacket join_packet_;
 };
 
 }

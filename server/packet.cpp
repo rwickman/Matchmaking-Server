@@ -22,7 +22,12 @@ namespace Matchmaking
     return header_length + body_length_;
   }
 
-  void Packet::body_length(std::size_t new_length)
+  std::size_t Packet::body_length()
+  {
+    return body_length_;
+  }
+
+  void Packet::set_body_length(std::size_t new_length)
   {
     body_length_ = new_length;
     if (body_length_ > max_body_length)

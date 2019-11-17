@@ -14,6 +14,7 @@ int main()
   }
   catch (std::exception& e)
   {
+    std::cerr << "SERVER ERROR" << std::endl;
     std::cerr << e.what() << std::endl;
   }
 

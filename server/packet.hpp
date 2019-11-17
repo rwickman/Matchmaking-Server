@@ -12,7 +12,7 @@ class Packet
 {
 public:
   enum { header_length = 4 };
-  enum { max_body_length = 512 };
+  enum { max_body_length = 2056 };
 
   Packet();
   
@@ -21,8 +21,10 @@ public:
   char* body();
 
   std::size_t length();
-  
-  void body_length(std::size_t new_length);
+   
+  std::size_t body_length();
+
+  void set_body_length(std::size_t new_length);
   
   void encode_header();
   

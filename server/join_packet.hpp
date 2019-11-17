@@ -10,7 +10,7 @@
 namespace Matchmaking
 {
 
-class JoinPacket : Packet
+class JoinPacket : public Packet
 {
 public:
   enum { header_length = 8 };

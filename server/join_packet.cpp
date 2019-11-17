@@ -21,6 +21,7 @@ namespace Matchmaking
     try
     {
       nlohmann::json join_json = nlohmann::json::parse(body());
+      // In the future consider doing some authentication of User ID
       user_id = join_json["User ID"].get<std::string>();
       game_type = static_cast<GameType>(join_json["Game Type"].get<int>());
       return true;
