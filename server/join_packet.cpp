@@ -11,7 +11,7 @@ namespace Matchmaking
     return user_id;
   }
 
-  int JoinPacket::get_game_type()
+  GameType JoinPacket::get_game_type()
   {
     return game_type;
   }

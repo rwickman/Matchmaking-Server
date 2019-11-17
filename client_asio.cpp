@@ -12,9 +12,9 @@ int main(int argc, char* argv[])
 {
  try
   {
-    if (argc < 2)
+    if (argc < 3)
     {
-      std::cerr << "Usage: client <host> <gametype>" << std::endl;
+      std::cerr << "Usage: client <host> <user_id> <game_type>" << std::endl;
       return 1;
     }
 
@@ -28,8 +28,8 @@ int main(int argc, char* argv[])
     boost::asio::connect(socket, endpoints);
     
     nlohmann::json j;
-    j["User ID"] = "123456";
-    j["Game Type"] = std::stoi(argv[2]);
+    j["User ID"] =  argv[2];
+    j["Game Type"] = std::stoi(argv[3]);
     
     
     std::string j_st = j.dump();

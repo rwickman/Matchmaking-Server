@@ -6,7 +6,7 @@
 #include <nlohmann/json.hpp>
 
 #include "packet.hpp"
-#include "gametype.hpp"
+#include "game_type.hpp"
 
 namespace Matchmaking
 {
@@ -21,7 +21,7 @@ public:
 
   std::string get_user_id();
 
-  int get_game_type();
+  GameType get_game_type();
 
   bool decode_join();
 

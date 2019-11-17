@@ -10,6 +10,8 @@
 #include <nlohmann/json.hpp>
 
 #include "join_packet.hpp"
+#include "game_queue.hpp"
+#include "game_queue_manager.hpp"
 
 namespace Matchmaking
 {
@@ -20,25 +22,23 @@ class TCPConnection
   : public boost::enable_shared_from_this<TCPConnection>
 {
 public:
-  static boost::shared_ptr<TCPConnection> create(boost::asio::io_context& io_context);
+  static boost::shared_ptr<TCPConnection> create(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager);
 
   tcp::socket& socket();
 
   void start();
 
 private:
-  TCPConnection(boost::asio::io_context& io_context); 
+  TCPConnection(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager); 
 
   void do_read_join_header();
   
   void do_read_join_body();
 
-  void handle_write(const boost::system::error_code& /*error*/,
-      size_t /*bytes_transferred*/);
-
-  
   tcp::socket socket_;
   JoinPacket join_packet_;
+  GameQueue* game_queue_;
+  GameQueueManager& game_queue_manager_;
 };
 
 }

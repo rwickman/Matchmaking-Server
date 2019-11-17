@@ -12,7 +12,7 @@ MatchmakingServer::MatchmakingServer(boost::asio::io_context& io_context)
 void MatchmakingServer::start_accept()
 {
     boost::shared_ptr<TCPConnection> new_connection =
-      TCPConnection::create(io_context_);
+      TCPConnection::create(io_context_, game_queue_manager_);
 
     acceptor_.async_accept(new_connection->socket(),
         boost::bind(&MatchmakingServer::handle_accept, this, new_connection,

@@ -1,8 +1,10 @@
 #ifndef MATCHMAKING_MATCHMAKING_SERVER_HPP
 #define MATCHMAKING_MATCHMAKING_SERVER_HPP
 
-#include "tcp_connection.hpp"
 #include <boost/asio.hpp>
+
+#include "tcp_connection.hpp"
+#include "game_queue_manager.hpp"
 
 namespace Matchmaking {
 
@@ -21,6 +23,7 @@ class MatchmakingServer
 
     boost::asio::io_context& io_context_;
     tcp::acceptor acceptor_;
+    GameQueueManager game_queue_manager_;
 };
 
 }

@@ -5,7 +5,7 @@
 #include <queue>
 #include <unordered_map>
 
-#include "gametype.hpp"
+#include "game_type.hpp"
 
 namespace Matchmaking
 {
@@ -13,11 +13,15 @@ namespace Matchmaking
 class GameQueue
 {
 public:
-  GameQueue(int min_game_size);
+  GameQueue(int min_game_size) 
+  :  min_game_size_(min_game_size)
+  ,  cur_queue_size_(0)
+  {
+  }
 
   size_t size()
   {
-    return game_queue.size();
+    return cur_queue_size_;
   }
 
   virtual void push(std::string user_id) = 0;
@@ -26,12 +30,12 @@ public:
   virtual std::string pop() = 0;
 
 protected:
-  std::queue<std::string> game_queue;
+  std::queue<std::string> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
-  std::unordered_map<std::string, int> user_map;
+  std::unordered_map<std::string, int> user_map_;
 
-  const int min_game_size;
-  int cur_queue_size;
+  const int min_game_size_;
+  size_t cur_queue_size_;
 
 };
 
