@@ -28,7 +28,7 @@ void DeathmatchGameQueue::push(User user)
   
   if (cur_queue_size_ >= min_game_size_)
   {
-    // TODO: Check if game is already is session and is find_gameable
+    // TODO: Check if game is already is session and is joinable
     std::cout << "READY TO START GAME" << std::endl;
     prepare_game();
   }
