@@ -12,6 +12,7 @@
 #include "join_packet.hpp"
 #include "game_queue.hpp"
 #include "game_queue_manager.hpp"
+#include "user.hpp"
 
 namespace Matchmaking
 {

@@ -2,16 +2,25 @@
 #define MATCHMAKING_USER_HPP
 
 #include <string>
-
-#include "tcp_connection.hpp"
+#include <functional>
 
 namespace Matchmaking
 {
 
-struct User
+class User
 {
-  std::string user_id;
-  TCPConnection& connection;
+public:
+  User(std::string user_id, std::string ip_address, std::function<void(std::string)> start_callback);
+
+  std::string get_user_id();
+
+  std::string get_ip_address();
+
+  std::function<void(std::string)> start_callback_;
+
+private:
+  std::string user_id_;
+  std::string ip_address_; 
 };
 
 }

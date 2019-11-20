@@ -14,9 +14,9 @@ class DeathmatchGameQueue : public GameQueue
 public:
   DeathmatchGameQueue();
 
-  void push(std::string user_id);
+  void push(User user);
 
-  std::string pop();
+  User pop();
   
   void start_game();
 };

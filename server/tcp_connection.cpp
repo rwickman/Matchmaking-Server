@@ -70,7 +70,10 @@ void TCPConnection::do_read_join_body()
 	        {
 	          // Get game queue and insert user into queue
   	          game_queue_ = &(game_queue_manager_.get_game_queue(join_packet_.get_game_type()));
-  	          game_queue_->push(join_packet_.get_user_id());
+  	          game_queue_->push(User(join_packet_.get_user_id(), "12", 
+					  [this](std::string ip_address) {
+					    std::cout << "GOT " << ip_address << std::endl;
+					  }));
 	        }
 	        else
 	        {

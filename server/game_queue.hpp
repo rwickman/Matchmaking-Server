@@ -25,14 +25,14 @@ public:
     return cur_queue_size_;
   }
 
-  virtual void push(std::string user_id) = 0;
+  virtual void push(User user) = 0;
 
   // Return the user_id of the item that was popped
-  virtual std::string pop() = 0;
+  virtual User pop() = 0;
 
   virtual void start_game() = 0;
 protected:
-  std::queue<std::string> game_queue_;
+  std::queue<User> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
   std::unordered_map<std::string, int> user_map_;
 
