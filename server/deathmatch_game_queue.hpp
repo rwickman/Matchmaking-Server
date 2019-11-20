@@ -18,6 +18,8 @@ public:
 
   User pop();
   
+  void prepare_game();
+
   void start_game();
 };
 

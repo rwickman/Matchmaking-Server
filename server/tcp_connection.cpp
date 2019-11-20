@@ -21,21 +21,21 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-  do_read_join_header();	
+  do_read_find_game_header();	
 }
 
-void TCPConnection::do_read_join_header()
+void TCPConnection::do_read_find_game_header()
 {
   try
   {
     auto self(shared_from_this());
     boost::asio::async_read(socket_,
-        boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
+        boost::asio::buffer(find_game_packet_.data(), FindGamePacket::header_length),
         [this, self](boost::system::error_code ec, std::size_t /*length*/)
         {
-          if (!ec && join_packet_.decode_header())
+          if (!ec && find_game_packet_.decode_header())
           {
-            do_read_join_body();
+            do_read_find_game_body();
           }
           else
           {
@@ -49,31 +49,33 @@ void TCPConnection::do_read_join_header()
   }
 }
 
-void TCPConnection::do_read_join_body()
+void TCPConnection::do_read_find_game_body()
 {
   try
   {
     auto self(shared_from_this());
     boost::asio::async_read(socket_,
-        boost::asio::buffer(join_packet_.body(), join_packet_.body_length()),
+        boost::asio::buffer(find_game_packet_.body(), find_game_packet_.body_length()),
         [this, self](boost::system::error_code ec, std::size_t /*length*/)
         {
 	  try
 	  {
             if (!ec)
             {
-  	      if (join_packet_.decode_join())
+  	      if (find_game_packet_.decode_find_game())
   	      {
-  	        std::cout << "USER ID: " << join_packet_.get_user_id() << std::endl;
-  	        std::cout << "Game Type: " << join_packet_.get_game_type() << std::endl;
-  	        if (game_queue_manager_.is_valid_game_type(join_packet_.get_game_type()))
+  	        std::cout << "USER ID: " << find_game_packet_.get_user_id() << std::endl;
+  	        std::cout << "Game Type: " << find_game_packet_.get_game_type() << std::endl;
+  	        if (game_queue_manager_.is_valid_game_type(find_game_packet_.get_game_type()))
 	        {
 	          // Get game queue and insert user into queue
-  	          game_queue_ = &(game_queue_manager_.get_game_queue(join_packet_.get_game_type()));
-		  User user = User(join_packet_.get_user_id(),
-				   socket_.remote_endpoint().address().to_string(),
-				   boost::bind(&Matchmaking::TCPConnection::do_write_start_body, this, _1));
-  	          game_queue_->push(user);
+  	          game_queue_ = &(game_queue_manager_.get_game_queue(find_game_packet_.get_game_type()));
+		  User temp_user = User(find_game_packet_.get_user_id(),
+				        socket_.remote_endpoint().address().to_string(),
+				        boost::bind(&Matchmaking::TCPConnection::host_game, this, _1)
+					boost::bind(&Matchmaking::TCPConnection::join_game, this, _1, _2);
+		  user_ = &temp_user;
+  	          game_queue_->push(temp_user);
 	        }
 	        else
 	        {
@@ -98,18 +100,17 @@ void TCPConnection::do_read_join_body()
   }
 }
 
-void TCPConnection::do_write_start_body(std::string ip_address)
+void TCPConnection::host_game(StartGameCallback start_game_callback)
 {
-  std::cout << "IP: " << ip_address << std::endl;
-  
-  if (socket_.remote_endpoint().address().to_string() == ip_address)
-  {
-    // This user will start the game
-  }
-  else
-  {
-    // This user will join the started game
-  }
+  // TODO: Write and then read the process ID
+
+  // FOr now use fake
+  std::string fake_proccess_id("12345");
+  start_game_callback(fake_process_id)
 }
 
+void TCPConnection::join_game(std::string process_id, std::string ip_addres:
+{
+  std::cout << "FindGameing game with " << ip_address << ":"<< process_id << std::endl;
+}
 }

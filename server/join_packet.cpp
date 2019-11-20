@@ -4,26 +4,25 @@ namespace Matchmaking
 {
   JoinPacket::JoinPacket()
   {
-  }
-
-  std::string JoinPacket::get_user_id()
+  } 
+  
+  std::string JoinPacket::get_ip_address()
   {
-    return user_id;
+    return ip_address_;
   }
 
-  GameType JoinPacket::get_game_type()
+  std::string JoinPacket::get_pid()
   {
-    return game_type;
+    return pid_;
   }
-
   bool JoinPacket::decode_join()
   {
     try
     {
       nlohmann::json join_json = nlohmann::json::parse(body());
       // In the future consider doing some authentication of User ID
-      user_id = join_json["User ID"].get<std::string>();
-      game_type = static_cast<GameType>(join_json["Game Type"].get<int>());
+      ip_address_ = join_json["IP"].get<std::string>();
+      pid_ = join_json["PID"].get<std::string>();
       return true;
     }
     catch(std::exception& e)
@@ -33,3 +32,4 @@ namespace Matchmaking
     }
   }
 }
+

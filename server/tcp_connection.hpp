@@ -9,7 +9,7 @@
 #include <boost/asio.hpp>
 #include <nlohmann/json.hpp>
 
-#include "join_packet.hpp"
+#include "find_game_packet.hpp"
 #include "game_queue.hpp"
 #include "game_queue_manager.hpp"
 #include "user.hpp"
@@ -32,16 +32,17 @@ public:
 private:
   TCPConnection(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager); 
 
-  void do_read_join_header();
+  void do_read_find_game_header();
   
-  void do_read_join_body();
+  void do_read_find_game_body();
 
-  void do_write_start_body(std::string ip_address);
+  void host_game(std::string ip_address);
 
   tcp::socket socket_;
-  JoinPacket join_packet_;
+  FindGamePacket find_game_packet_;
   GameQueue* game_queue_;
   GameQueueManager& game_queue_manager_;
+  User* user_;
 };
 
 }

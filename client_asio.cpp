@@ -4,7 +4,7 @@
 #include <boost/asio.hpp>
 #include <nlohmann/json.hpp>
 
-#include "server/join_packet.hpp"
+#include "server/find_game_packet.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -35,23 +35,23 @@ int main(int argc, char* argv[])
     std::string j_st = j.dump();
     const char* j_str = j_st.c_str();
 
-    Matchmaking::JoinPacket join_packet;
+    Matchmaking::FindGamePacket find_game_packet;
 
     
     // Encode the header to the correct body length
-    join_packet.set_body_length(j_st.size());
-    join_packet.encode_header();
+    find_game_packet.set_body_length(j_st.size());
+    find_game_packet.encode_header();
 
-    // Send the join packet
-    size_t bytes_written = socket.write_some(boost::asio::buffer(join_packet.data(), join_packet.header_length));
+    // Send the find_game packet
+    size_t bytes_written = socket.write_some(boost::asio::buffer(find_game_packet.data(), find_game_packet.header_length));
     std::cout << bytes_written << std::endl;
 
-    // Copy into join packet
-    memcpy(join_packet.body(), j_str, j_st.size());
-    std::string temp(join_packet.body());
-    std::cout << "BODY: " << join_packet.body() << std::endl;
+    // Copy into find_game packet
+    memcpy(find_game_packet.body(), j_str, j_st.size());
+    std::string temp(find_game_packet.body());
+    std::cout << "BODY: " << find_game_packet.body() << std::endl;
     
-    bytes_written = socket.write_some(boost::asio::buffer(join_packet.body(), join_packet.body_length()));
+    bytes_written = socket.write_some(boost::asio::buffer(find_game_packet.body(), find_game_packet.body_length()));
     std::cout << bytes_written << std::endl;
   /* 
     for (;;)

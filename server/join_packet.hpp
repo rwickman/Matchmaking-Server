@@ -19,19 +19,19 @@ public:
 
   JoinPacket();
 
-  std::string get_user_id();
+  std::string get_ip_address();
 
-  GameType get_game_type();
-
+  std::string get_pid();
+  
   bool decode_join();
 
 protected:
-  // In the future user identification may need its own class
-  std::string user_id;
-  GameType game_type;
+  std::string ip_address_;
+  std::string pid_;
 
 };
 
 }
 
 #endif // MATCHMAKING_JOIN_PACKET_HPP
+

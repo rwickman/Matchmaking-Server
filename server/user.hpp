@@ -7,16 +7,24 @@
 namespace Matchmaking
 {
 
+using StartGameCallback = std::function<void(std::string)>;
+
 class User
 {
 public:
-  User(std::string user_id, std::string ip_address, std::function<void(std::string)> start_callback);
+
+  User(std::string user_id,
+       std::string ip_address,
+       std::function<void(StartGameCallback)> host_callback,
+       std::function<void(std::string, std::string)> find_game_callback);
 
   std::string get_user_id();
 
   std::string get_ip_address();
 
-  std::function<void(std::string)> start_callback_;
+  std::function<void(start_game_callback)> host_callback_;
+  
+  std::function<void(std::string, std::string)> find_game_callback_;
 
 private:
   std::string user_id_;

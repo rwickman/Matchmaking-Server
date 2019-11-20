@@ -31,6 +31,8 @@ public:
   // Return the user_id of the item that was popped
   virtual User pop() = 0;
 
+  virtual void prepare_game() = 0;
+  
   virtual void start_game() = 0;
 protected:
   std::queue<User> game_queue_;
