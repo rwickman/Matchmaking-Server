@@ -17,6 +17,8 @@ public:
   void push(std::string user_id);
 
   std::string pop();
+  
+  void start_game();
 };
 
 }

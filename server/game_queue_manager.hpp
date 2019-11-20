@@ -17,7 +17,7 @@ public:
   GameQueue& get_game_queue(GameType game_type);
 
 private:
-  DeathmatchGameQueue deathmatch_game_queue_;
+  DeathmatchGameQueue& deathmatch_game_queue_;
 
 };	
 

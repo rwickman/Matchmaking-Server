@@ -54,4 +54,8 @@ namespace Matchmaking
     return next_user_id;
   }
 
+  void DeathmatchGameQueue::start_game()
+  {
+    
+  }
 }

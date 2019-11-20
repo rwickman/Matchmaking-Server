@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "game_type.hpp"
+#include "user.hpp"
 
 namespace Matchmaking
 {
@@ -29,6 +30,7 @@ public:
   // Return the user_id of the item that was popped
   virtual std::string pop() = 0;
 
+  virtual void start_game() = 0;
 protected:
   std::queue<std::string> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
