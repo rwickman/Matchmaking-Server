@@ -70,10 +70,10 @@ void TCPConnection::do_read_join_body()
 	        {
 	          // Get game queue and insert user into queue
   	          game_queue_ = &(game_queue_manager_.get_game_queue(join_packet_.get_game_type()));
-  	          game_queue_->push(User(join_packet_.get_user_id(), "12", 
-					  [this](std::string ip_address) {
-					    std::cout << "GOT " << ip_address << std::endl;
-					  }));
+		  User user = User(join_packet_.get_user_id(),
+				   socket_.remote_endpoint().address().to_string(),
+				   boost::bind(&Matchmaking::TCPConnection::do_write_start_body, this, _1));
+  	          game_queue_->push(user);
 	        }
 	        else
 	        {
@@ -95,6 +95,20 @@ void TCPConnection::do_read_join_body()
   catch(std::exception& e)
   {
     std::cerr << e.what() << std::endl;
+  }
+}
+
+void TCPConnection::do_write_start_body(std::string ip_address)
+{
+  std::cout << "IP: " << ip_address << std::endl;
+  
+  if (socket_.remote_endpoint().address().to_string() == ip_address)
+  {
+    // This user will start the game
+  }
+  else
+  {
+    // This user will join the started game
   }
 }
 

@@ -36,6 +36,8 @@ private:
   
   void do_read_join_body();
 
+  void do_write_start_body(std::string ip_address);
+
   tcp::socket socket_;
   JoinPacket join_packet_;
   GameQueue* game_queue_;
