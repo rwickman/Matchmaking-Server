@@ -9,3 +9,6 @@ cd boost_1_71_0
 ./bootstrap.sh --prefix=/usr && ./b2 stage -j 2 threading=multi link=shared
 sudo ./b2 install threading=multi link=shared && ln -svf detail/sha1.hpp /usr/include/boost/uuid/sha1.hpp
 ```
+
+## TODO
+* Fix error if user id is not long enough it cannot parse json
