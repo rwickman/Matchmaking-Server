@@ -4,7 +4,7 @@
 namespace Matchmaking
 {
   
-  DeathmatchGameQueue::DeathmatchGameQueue() : GameQueue(2)
+  DeathmatchGameQueue::DeathmatchGameQueue() : GameQueue(2, 4)
   {
   }
 
@@ -59,7 +59,19 @@ namespace Matchmaking
 
   void DeathmatchGameQueue::start_game()
   {
-    User cur_user = pop();
-    cur_user.start_callback_("12345678"); 
+    std::string cur_game_ip;
+    int cur_game_size = 0;
+    while(cur_queue_size_ > 0 && cur_game_size < max_game_size_)
+    {
+      User cur_user = pop();
+      std::cout << "ADDING USER: " << cur_user.get_user_id() << std::endl;
+      cur_game_size += 1;
+      if (cur_game_size == 1)
+      {
+        cur_game_ip = cur_user.get_ip_address();
+      }
+      // This could return a response regarding if it still available or it has created the game
+      cur_user.start_callback_(cur_game_ip);
+    }
   }
 }

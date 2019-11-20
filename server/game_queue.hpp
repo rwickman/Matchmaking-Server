@@ -14,8 +14,9 @@ namespace Matchmaking
 class GameQueue
 {
 public:
-  GameQueue(int min_game_size) 
+  GameQueue(int min_game_size, int max_game_size) 
   :  min_game_size_(min_game_size)
+  ,  max_game_size_(max_game_size)
   ,  cur_queue_size_(0)
   {
   }
@@ -37,6 +38,7 @@ protected:
   std::unordered_map<std::string, int> user_map_;
 
   const int min_game_size_;
+  const int max_game_size_;
   size_t cur_queue_size_;
 
 };

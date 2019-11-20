@@ -11,4 +11,5 @@ sudo ./b2 install threading=multi link=shared && ln -svf detail/sha1.hpp /usr/in
 ```
 
 ## TODO
-* Fix error if user id is not long enough it cannot parse json
+* Fix error for writting json to data as it sometimes doesnt work right
+* If server crashes reboot it
