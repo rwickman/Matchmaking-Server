@@ -61,28 +61,22 @@ User DeathmatchGameQueue::pop()
 
 void DeathmatchGameQueue::prepare_game()
 {
+  // Pick the user that will act as the server
   User user_host = pop();
-  user_host.host_callback();  
+  user_host.host_callback_(boost::bind(&Matchmaking::DeathmatchGameQueue::start_game, this, _1)); 
 }
 
-void DeathmatchGameQueue::start_game()
+void DeathmatchGameQueue::start_game(JoinPacket join_packet)
 {
-/*
-  std::string cur_game_ip;
-  int cur_game_size = 0;
+  // Initialize to 1 to account for the server
+  int cur_game_size = 1; 
   while(cur_queue_size_ > 0 && cur_game_size < max_game_size_)
   {
     User cur_user = pop();
     std::cout << "ADDING USER: " << cur_user.get_user_id() << std::endl;
     cur_game_size += 1;
-    if (cur_game_size == 1)
-    {
-      cur_game_ip = cur_user.get_ip_address();
-    }
-    // This could return a response regarding if it still available or it has created the game
-    cur_user.start_callback_(cur_game_ip);
+    cur_user.join_callback_(join_packet);
   }
-*/
 }
 
 }

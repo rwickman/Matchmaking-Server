@@ -70,10 +70,10 @@ void TCPConnection::do_read_find_game_body()
 	        {
 	          // Get game queue and insert user into queue
   	          game_queue_ = &(game_queue_manager_.get_game_queue(find_game_packet_.get_game_type()));
-		  User temp_user = User(find_game_packet_.get_user_id(),
-				        socket_.remote_endpoint().address().to_string(),
-				        boost::bind(&Matchmaking::TCPConnection::host_game, this, _1)
-					boost::bind(&Matchmaking::TCPConnection::join_game, this, _1, _2);
+		  User temp_user(find_game_packet_.get_user_id(),
+				 socket_.remote_endpoint().address().to_string(),
+				 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1),
+		                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
 		  user_ = &temp_user;
   	          game_queue_->push(temp_user);
 	        }
@@ -105,12 +105,13 @@ void TCPConnection::host_game(StartGameCallback start_game_callback)
   // TODO: Write and then read the process ID
 
   // FOr now use fake
-  std::string fake_proccess_id("12345");
-  start_game_callback(fake_process_id)
+  std::cout << "HOST USER ID: " << user_->get_user_id() << std::endl;
+  JoinPacket join_packet("localhost", "12345");
+  start_game_callback(join_packet);
 }
 
-void TCPConnection::join_game(std::string process_id, std::string ip_addres:
+void TCPConnection::join_game(JoinPacket join_packet)
 {
-  std::cout << "FindGameing game with " << ip_address << ":"<< process_id << std::endl;
+  std::cout << "Finding game with " << join_packet.get_ip_address() << ":"<< join_packet.get_pid() << std::endl;
 }
 }

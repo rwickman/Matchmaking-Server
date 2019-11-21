@@ -25,5 +25,6 @@ target_link_libraries(Server PUBLIC
 target_link_libraries(Client PUBLIC 
                       ${Boost_LIBRARIES}
 		      nlohmann_json
-		      JoinPacket)
+		      JoinPacket
+		      FindGamePacket)
 

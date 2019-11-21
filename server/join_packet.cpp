@@ -6,6 +6,12 @@ namespace Matchmaking
   {
   } 
   
+  JoinPacket::JoinPacket(std::string ip_address, std::string pid)
+  : ip_address_(ip_address)
+  , pid_(pid)
+  {
+  }
+  
   std::string JoinPacket::get_ip_address()
   {
     return ip_address_;
@@ -15,6 +21,7 @@ namespace Matchmaking
   {
     return pid_;
   }
+
   bool JoinPacket::decode_join()
   {
     try
@@ -31,5 +38,6 @@ namespace Matchmaking
       return false;
     }
   }
+
 }
 

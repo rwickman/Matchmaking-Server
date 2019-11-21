@@ -18,6 +18,8 @@ public:
   enum { max_body_length = 512 };
 
   JoinPacket();
+  
+  JoinPacket(std::string ip_address, std::string pid);
 
   std::string get_ip_address();
 

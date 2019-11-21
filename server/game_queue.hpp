@@ -1,12 +1,14 @@
 #ifndef MATCHMAKING_GAME_QUEUE_HPP
 #define MATCHMAKING_GAME_QUEUE_HPP
 
+#include <boost/bind.hpp>
 #include <string>
 #include <queue>
 #include <unordered_map>
 
 #include "game_type.hpp"
 #include "user.hpp"
+#include "join_packet.hpp"
 
 namespace Matchmaking
 {
@@ -33,7 +35,7 @@ public:
 
   virtual void prepare_game() = 0;
   
-  virtual void start_game() = 0;
+  virtual void start_game(JoinPacket) = 0;
 protected:
   std::queue<User> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
