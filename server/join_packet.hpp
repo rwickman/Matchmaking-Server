@@ -1,12 +1,12 @@
 #ifndef MATCHMAKING_JOIN_PACKET_HPP
 #define MATCHMAKING_JOIN_PACKET_HPP
 
-
 #include <string>
 #include <nlohmann/json.hpp>
 
 #include "packet.hpp"
 #include "game_type.hpp"
+#include "packet_type.hpp"
 
 namespace Matchmaking
 {

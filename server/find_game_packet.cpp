@@ -3,6 +3,7 @@
 namespace Matchmaking
 {
   FindGamePacket::FindGamePacket()
+  : Packet(PacketType::FindGame)
   {
   }
 

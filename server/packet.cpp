@@ -2,8 +2,15 @@
 
 namespace Matchmaking
 {
-  Packet::Packet() : 
-	  body_length_(0)
+  Packet::Packet()
+  : body_length_(0)
+  , packet_type_(Packet)
+  {
+  }
+
+  Packet::Packet(PacketType packet_type)
+  : body_length_(0)
+  , packet_type_(packet_type)
   {
   }
 
@@ -25,6 +32,11 @@ namespace Matchmaking
   std::size_t Packet::body_length()
   {
     return body_length_;
+  }
+
+  PacketType Packet::packet_type()
+  {
+    return packet_type_;
   }
 
   void Packet::set_body_length(std::size_t new_length)

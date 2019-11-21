@@ -3,11 +3,13 @@
 namespace Matchmaking
 {
   JoinPacket::JoinPacket()
+  : Packet(PacketType::Join)
   {
   } 
   
   JoinPacket::JoinPacket(std::string ip_address, std::string pid)
-  : ip_address_(ip_address)
+  : Packet(PacketType::Join)
+  , ip_address_(ip_address)
   , pid_(pid)
   {
   }

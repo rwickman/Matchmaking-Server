@@ -7,6 +7,7 @@
 
 #include "packet.hpp"
 #include "game_type.hpp"
+#include "packet_type.hpp"
 
 namespace Matchmaking
 {
