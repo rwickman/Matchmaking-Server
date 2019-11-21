@@ -33,9 +33,12 @@ public:
   // Return the user_id of the item that was popped
   virtual User pop() = 0;
 
+  // Erase user from queue. Returns true if user was found and erased.
+  virtual bool erase(User& user_to_erase) = 0;
+
   virtual void prepare_game() = 0;
   
-  virtual void start_game(JoinPacket) = 0;
+  virtual void start_game(JoinPacket& join_packet) = 0;
 protected:
   std::queue<User> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue

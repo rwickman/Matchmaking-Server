@@ -12,10 +12,15 @@ void DeathmatchGameQueue::push(User user)
 {
   std::string user_id = user.get_user_id();
   std::unordered_map<std::string,int>::iterator user_it = user_map_.find(user_id);
-  // Only add user_id to queue if not already found
+  // Only add user_id to queue if not already found or if erased previously
   if (user_it == user_map_.end())
   {
     user_map_.insert(std::pair<std::string, int>(user_id, 1));
+    cur_queue_size_ += 1;
+  }
+  else if (user_it->second <= 0)
+  {
+    user_it->second = 1;
     cur_queue_size_ += 1;
   }
   else
@@ -58,6 +63,23 @@ User DeathmatchGameQueue::pop()
   return next_user;
 }
 
+bool DeathmatchGameQueue::erase(User& user_to_erase)
+{
+  std::unordered_map<std::string,int>::iterator user_it = user_map_.find(user_to_erase.get_user_id());
+  if (user_it != user_map_.end())
+  {
+    // This will make it so when it pops off the queue it will not be added
+    user_it->second = 0;
+    cur_queue_size_ -= 1;
+    std::cout << "ERASED USER " << user_it->first << std::endl;
+    return true;
+  }
+  else
+  {
+    return false;
+  }
+}
+
 
 void DeathmatchGameQueue::prepare_game()
 {
@@ -66,7 +88,7 @@ void DeathmatchGameQueue::prepare_game()
   user_host.host_callback_(boost::bind(&Matchmaking::DeathmatchGameQueue::start_game, this, _1)); 
 }
 
-void DeathmatchGameQueue::start_game(JoinPacket join_packet)
+void DeathmatchGameQueue::start_game(JoinPacket& join_packet)
 {
   // Initialize to 1 to account for the server
   int cur_game_size = 1; 

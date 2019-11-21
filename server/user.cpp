@@ -6,7 +6,7 @@ namespace Matchmaking
 User::User(std::string user_id,
 	   std::string ip_address,
 	   std::function<void(StartGameCallback)> host_callback,
-	   std::function<void(JoinPacket)> join_callback)
+	   std::function<void(JoinPacket&)> join_callback)
   : user_id_(user_id)
   , ip_address_(ip_address)
   , host_callback_(host_callback)

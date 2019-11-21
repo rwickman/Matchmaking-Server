@@ -18,9 +18,11 @@ public:
 
   User pop();
   
+  bool erase(User& user_to_erase);
+  
   void prepare_game();
 
-  void start_game(JoinPacket join_packet);
+  void start_game(JoinPacket& join_packet);
 };
 
 }
