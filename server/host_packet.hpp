@@ -18,17 +18,12 @@ public:
 
   HostPacket();
 
-  std::string get_ip_address();
-
   std::string get_game_type();
 
   bool decode_host();
 
 protected:
-  std::string ip_address_;
-  GameType game_type;
-
-};
+}:
 
 }
 
