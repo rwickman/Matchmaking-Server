@@ -30,8 +30,11 @@ public:
 
   void start();
 
+  ~TCPConnection();
+
 private:
   TCPConnection(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager); 
+
 
   void do_read_find_game_header();
   

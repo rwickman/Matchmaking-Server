@@ -8,6 +8,16 @@ TCPConnection::TCPConnection(boost::asio::io_context& io_context, GameQueueManag
 {
 }
 
+TCPConnection::~TCPConnection()
+{
+  // Remove this user from the queue
+
+  if (game_queue_ != NULL)
+  {
+    game_queue_->erase(*user_);
+  }
+}
+
 boost::shared_ptr<TCPConnection> 
 TCPConnection::create(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager)
 {
