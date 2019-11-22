@@ -26,6 +26,7 @@ namespace Matchmaking
       find_game_json["User ID"] = user_id_; 
       find_game_json["Game Type"] = game_type_;
       std::string find_game_str(find_game_json.dump());
+      set_body_length(find_game_str.size());
       find_game_str.copy(body(), find_game_str.size());
       return true;
     }

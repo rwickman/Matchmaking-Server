@@ -33,6 +33,7 @@ namespace Matchmaking
       join_json["IP"] = ip_address_;
       join_json["PID"] = pid_;
       std::string join_str(join_json.dump());
+      set_body_length(join_str.size());
       join_str.copy(body(), join_str.size());
       return true;
     }

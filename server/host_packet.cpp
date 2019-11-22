@@ -27,6 +27,7 @@ namespace Matchmaking
       host_json["Packet Type"] = (int) packet_type_;
       host_json["Game Type"] = game_type_;
       std::string host_str(host_json.dump());
+      set_body_length(host_str.size());
       host_str.copy(body(), host_str.size());
       return true;
     }
