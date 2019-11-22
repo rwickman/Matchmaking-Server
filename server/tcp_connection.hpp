@@ -43,7 +43,7 @@ private:
   
   void do_read_find_game_body();
 
-  void host_game(StartGameCallback start_game_callback, GameType host_game_type);
+  void host_game(StartGameCallback start_game_callback, GameType& host_game_type);
  
   void do_read_join_header();
 
@@ -54,6 +54,7 @@ private:
   tcp::socket socket_;
   FindGamePacket find_game_packet_;
   JoinPacket join_packet_;
+  StartGameCallback* start_game_callback_;
   GameQueue* game_queue_;
   GameQueueManager& game_queue_manager_;
   User* user_;

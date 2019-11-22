@@ -110,9 +110,9 @@ void TCPConnection::do_read_find_game_body()
   }
 }
 
-void TCPConnection::host_game(StartGameCallback start_game_callback, GameType host_game_type)
+void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& host_game_type)
 {
-
+  start_game_callback_ = &start_game_callback;
   HostPacket host_packet(host_game_type);
   // TODO: See if both of these encode statements can be replaced with a single encode method in Packet class
   host_packet.encode_body();
@@ -126,27 +126,42 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType ho
 	  // Call a read to read the process ID back from the user
 	}
       });
-
-  // FOr now use fake
-  std::cout << "HOST USER ID: " << user_->get_user_id() << std::endl;
-  JoinPacket join_packet("localhost", "12345");
-  start_game_callback(join_packet);
 }
 
 void TCPConnection::do_read_join_header()
 {
-//  boost::asio::async_read(socket_,
-//      boost::asio::buffer(
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
+      [this](boost::system::error_code ec, std::size_t /*length*/)
+      {
+        if (!ec)
+	{
+	  do_read_join_header();
+	}
+      });
 }
 
 void TCPConnection::do_read_join_body()
 {
-
-
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(join_packet_.body(), join_packet_.body_length()),
+      [this](boost::system::error_code ec, std::size_t /*length*/)
+     {
+       if (!ec)
+       {
+         (*start_game_callback_)(join_packet_);
+       }
+     });
 }
-
 void TCPConnection::join_game(JoinPacket join_packet)
 {
   std::cout << "Finding game with " << join_packet.get_ip_address() << ":"<< join_packet.get_pid() << std::endl;
+  boost::asio::async_write(socket_,
+      boost::asio::buffer(join_packet.data(), join_packet_.length()),
+      [this](boost::system::error_code ec, std::size_t /*length*/)
+      {
+        // Do something after write.
+      });
 }
+
 }

@@ -12,7 +12,7 @@ namespace Matchmaking
 
 // Used by game queue to send servers join packet to all users
 using StartGameCallback = std::function<void(JoinPacket&)>;
-using HostCallback = std::function<void(StartGameCallback, GameType)>;
+using HostCallback = std::function<void(StartGameCallback, GameType&)>;
 using JoinCallback = std::function<void(JoinPacket&)>;
 
 class User
