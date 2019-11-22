@@ -22,11 +22,13 @@ public:
 
   GameType get_game_type();
 
-  bool encode_bost();
+  bool encode_body();
 
   bool decode_body();
 
-}:
+protected:
+  GameType game_type_;
+};
 
 }
 

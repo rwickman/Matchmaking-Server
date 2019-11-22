@@ -16,7 +16,7 @@ namespace Matchmaking
 
   GameType HostPacket::get_game_type()
   {
-    return game_type__;
+    return game_type_;
   }
 
   bool HostPacket::encode_body()
@@ -42,7 +42,7 @@ namespace Matchmaking
     try
     {
       nlohmann::json host_json = nlohmann::json::parse(body());
-      game_type__ = static_cast<GameType>(host_json["Game Type"].get<int>());
+      game_type_ = static_cast<GameType>(host_json["Game Type"].get<int>());
       //packet_type_ = host_json["Packet Type"].get<PacketType>();
       return true;
     }

@@ -82,7 +82,7 @@ void TCPConnection::do_read_find_game_body()
   	          game_queue_ = &(game_queue_manager_.get_game_queue(find_game_packet_.get_game_type()));
 		  User temp_user(find_game_packet_.get_user_id(),
 				 socket_.remote_endpoint().address().to_string(),
-				 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1),
+				 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1, _2),
 		                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
 		  user_ = &temp_user;
   	          game_queue_->push(temp_user);
@@ -117,7 +117,7 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType ho
   // TODO: See if both of these encode statements can be replaced with a single encode method in Packet class
   host_packet.encode_body();
   host_packet.encode_header();
-  boost:asio::async_write(socket_,
+  boost::asio::async_write(socket_,
       boost::asio::buffer(host_packet.data(), host_packet.body_length()),
       [this](boost::system::error_code ec, std::size_t /*length*/)
       {
@@ -131,6 +131,18 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType ho
   std::cout << "HOST USER ID: " << user_->get_user_id() << std::endl;
   JoinPacket join_packet("localhost", "12345");
   start_game_callback(join_packet);
+}
+
+void TCPConnection::do_read_join_header()
+{
+//  boost::asio::async_read(socket_,
+//      boost::asio::buffer(
+}
+
+void TCPConnection::do_read_join_body()
+{
+
+
 }
 
 void TCPConnection::join_game(JoinPacket join_packet)

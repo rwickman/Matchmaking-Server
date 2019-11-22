@@ -85,7 +85,7 @@ void DeathmatchGameQueue::prepare_game()
 {
   // Pick the user that will act as the server
   User user_host = pop();
-  user_host.host_callback_(boost::bind(&Matchmaking::DeathmatchGameQueue::start_game, this, _1)); 
+  user_host.host_callback_(boost::bind(&Matchmaking::DeathmatchGameQueue::start_game, this, _1), game_type_); 
 }
 
 void DeathmatchGameQueue::start_game(JoinPacket& join_packet)

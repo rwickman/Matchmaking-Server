@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 
     
     // Encode the header to the correct body length
-    find_game_packet.set_body_length(j_st.size());
+    find_game_packet.set_body_length(j_str.size());
     find_game_packet.encode_header();
 
     // Send the find_game packet
