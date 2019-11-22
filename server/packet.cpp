@@ -4,7 +4,7 @@ namespace Matchmaking
 {
   Packet::Packet()
   : body_length_(0)
-  , packet_type_(Packet)
+  , packet_type_(PacketType::Packet)
   {
   }
 
