@@ -72,7 +72,7 @@ void TCPConnection::do_read_find_game_body()
 	  {
             if (!ec)
             {
-  	      if (find_game_packet_.decode_find_game())
+  	      if (find_game_packet_.decode_body())
   	      {
   	        std::cout << "USER ID: " << find_game_packet_.get_user_id() << std::endl;
   	        std::cout << "Game Type: " << find_game_packet_.get_game_type() << std::endl;
@@ -110,9 +110,22 @@ void TCPConnection::do_read_find_game_body()
   }
 }
 
-void TCPConnection::host_game(StartGameCallback start_game_callback)
+void TCPConnection::host_game(StartGameCallback start_game_callback, GameType host_game_type)
 {
-  // TODO: Write and then read the process ID
+
+  HostPacket host_packet(host_game_type);
+  // TODO: See if both of these encode statements can be replaced with a single encode method in Packet class
+  host_packet.encode_body();
+  host_packet.encode_header();
+  boost:asio::async_write(socket_,
+      boost::asio::buffer(host_packet.data(), host_packet.body_length()),
+      [this](boost::system::error_code ec, std::size_t /*length*/)
+      {
+        if (!ec)
+	{
+	  // Call a read to read the process ID back from the user
+	}
+      });
 
   // FOr now use fake
   std::cout << "HOST USER ID: " << user_->get_user_id() << std::endl;

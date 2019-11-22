@@ -11,6 +11,7 @@
 
 #include "find_game_packet.hpp"
 #include "join_packet.hpp"
+#include "host_packet.hpp"
 #include "game_queue.hpp"
 #include "game_queue_manager.hpp"
 #include "user.hpp"
@@ -40,7 +41,7 @@ private:
   
   void do_read_find_game_body();
 
-  void host_game(StartGameCallback start_game_callback);
+  void host_game(StartGameCallback start_game_callback, GameType host_game_type);
   
   void join_game(JoinPacket join_packet);
 

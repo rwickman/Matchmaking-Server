@@ -32,8 +32,7 @@ int main(int argc, char* argv[])
     j["Game Type"] = std::stoi(argv[3]);
     
     
-    std::string j_st = j.dump();
-    const char* j_str = j_st.c_str();
+    std::string j_str = j.dump();
 
     Matchmaking::FindGamePacket find_game_packet;
 
@@ -47,7 +46,7 @@ int main(int argc, char* argv[])
     std::cout << bytes_written << std::endl;
 
     // Copy into find_game packet
-    memcpy(find_game_packet.body(), j_str, j_st.size());
+    j_str.copy(find_game_packet.body(), j_str.size());
     std::string temp(find_game_packet.body());
     std::cout << "BODY: " << find_game_packet.body() << std::endl;
     
