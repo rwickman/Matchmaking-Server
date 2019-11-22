@@ -16,10 +16,11 @@ namespace Matchmaking
 class GameQueue
 {
 public:
-  GameQueue(int min_game_size, int max_game_size) 
-  :  min_game_size_(min_game_size)
-  ,  max_game_size_(max_game_size)
-  ,  cur_queue_size_(0)
+  GameQueue(int min_game_size, int max_game_size, GameType game_type) 
+  : min_game_size_(min_game_size)
+  , max_game_size_(max_game_size)
+  , cur_queue_size_(0)
+  , game_type_(game_type)
   {
   }
 
@@ -43,7 +44,8 @@ protected:
   std::queue<User> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
   std::unordered_map<std::string, int> user_map_;
-
+  // The game type this queue represents
+  GameType game_type_;
   const int min_game_size_;
   const int max_game_size_;
   size_t cur_queue_size_;

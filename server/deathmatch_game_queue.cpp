@@ -4,7 +4,7 @@
 namespace Matchmaking
 {
   
-DeathmatchGameQueue::DeathmatchGameQueue() : GameQueue(2, 4)
+DeathmatchGameQueue::DeathmatchGameQueue() : GameQueue(2, 4, GameType::Deathmatch)
 {
 }
 

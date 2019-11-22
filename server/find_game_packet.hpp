@@ -24,12 +24,14 @@ public:
 
   GameType get_game_type();
 
-  bool decode_find_game();
+  bool encode_body();
+
+  bool decode_body();
 
 protected:
   // In the future user identification may need its own class
-  std::string user_id;
-  GameType game_type;
+  std::string user_id_;
+  GameType game_type_;
 
 };
 

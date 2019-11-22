@@ -24,8 +24,10 @@ public:
   std::string get_ip_address();
 
   std::string get_pid();
-  
-  bool decode_join();
+
+  bool encode_body();
+
+  bool decode_body();
 
 protected:
   std::string ip_address_;

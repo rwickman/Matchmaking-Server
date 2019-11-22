@@ -36,6 +36,10 @@ public:
   
   bool decode_header();
 
+  virtual bool encode_body() = 0;
+  
+  virtual bool decode_body() = 0;
+
 protected:
   //const uint16_t header_length_;
   //const std::size_t max_body_length_;

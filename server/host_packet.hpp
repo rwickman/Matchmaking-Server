@@ -18,11 +18,14 @@ public:
 
   HostPacket();
 
-  std::string get_game_type();
+  HostPacket(GameType game_type);
 
-  bool decode_host();
+  GameType get_game_type();
 
-protected:
+  bool encode_bost();
+
+  bool decode_body();
+
 }:
 
 }

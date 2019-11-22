@@ -24,7 +24,27 @@ namespace Matchmaking
     return pid_;
   }
 
-  bool JoinPacket::decode_join()
+  bool JoinPacket::encode_body()
+  {
+    try
+    {
+      nlohmann::json join_json;
+      join_json["Packet Type"] = (int) packet_type_;
+      join_json["IP"] = ip_address_;
+      join_json["PID"] = pid_;
+      std::string join_str(join_json.dump());
+      join_str.copy(body(), join_str.size());
+      return true;
+    }
+    catch(std::exception& e)
+    {
+      std::cerr << e.what() << std::endl;
+      return false;
+    }
+  }
+
+
+  bool JoinPacket::decode_body()
   {
     try
     {
@@ -32,6 +52,7 @@ namespace Matchmaking
       // In the future consider doing some authentication of User ID
       ip_address_ = join_json["IP"].get<std::string>();
       pid_ = join_json["PID"].get<std::string>();
+      //packet_type_ = join_json["Packet Type"].get<PacketType>();
       return true;
     }
     catch(std::exception& e)
