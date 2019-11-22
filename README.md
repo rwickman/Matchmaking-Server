@@ -14,3 +14,4 @@ sudo ./b2 install threading=multi link=shared && ln -svf detail/sha1.hpp /usr/in
 * Fix error for writting json to data as it sometimes doesnt work right
 * If server crashes reboot it
 * Need to verify TCP connection is still active before calling host or join callbacks
+* Look into when boost post should be used for optimization purposes
