@@ -25,7 +25,7 @@ public:
 
   std::string get_pid();
 
-  bool encode_body();
+  bool encode();
 
   bool decode_body();
 

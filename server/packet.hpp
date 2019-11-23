@@ -13,7 +13,7 @@ namespace Matchmaking
 class Packet
 {
 public:
-  enum { header_length = 4 };
+  enum { header_length = 8 };
   enum { max_body_length = 2056 };
 
   Packet();
@@ -36,7 +36,7 @@ public:
   
   bool decode_header();
 
-  virtual bool encode_body() = 0;
+  virtual bool encode() = 0;
   
   virtual bool decode_body() = 0;
 

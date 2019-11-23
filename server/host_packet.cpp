@@ -19,7 +19,7 @@ namespace Matchmaking
     return game_type_;
   }
 
-  bool HostPacket::encode_body()
+  bool HostPacket::encode()
   {
     try
     {
@@ -28,6 +28,7 @@ namespace Matchmaking
       host_json["Game Type"] = game_type_;
       std::string host_str(host_json.dump());
       set_body_length(host_str.size());
+      encode_header();
       host_str.copy(body(), host_str.size());
       return true;
     }

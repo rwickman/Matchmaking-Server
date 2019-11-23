@@ -24,7 +24,7 @@ namespace Matchmaking
     return pid_;
   }
 
-  bool JoinPacket::encode_body()
+  bool JoinPacket::encode()
   {
     try
     {
@@ -34,6 +34,7 @@ namespace Matchmaking
       join_json["PID"] = pid_;
       std::string join_str(join_json.dump());
       set_body_length(join_str.size());
+      encode_header();
       join_str.copy(body(), join_str.size());
       return true;
     }
