@@ -14,7 +14,9 @@ TCPConnection::~TCPConnection()
 
   if (game_queue_ != NULL)
   {
-    game_queue_->erase(*user_);
+    std::cout << "QUEUE NOT NULL" << std::endl;
+    std::cout << "USER: " << user_->get_user_id() << std::endl;
+    game_queue_->erase(user_);
   }
 }
 
@@ -79,13 +81,13 @@ void TCPConnection::do_read_find_game_body()
   	        if (game_queue_manager_.is_valid_game_type(find_game_packet_.get_game_type()))
 	        {
 	          // Get game queue and insert user into queue
-  	          game_queue_ = &(game_queue_manager_.get_game_queue(find_game_packet_.get_game_type()));
-		  User temp_user(find_game_packet_.get_user_id(),
-				 socket_.remote_endpoint().address().to_string(),
-				 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1, _2),
-		                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
-		  user_ = &temp_user;
-  	          game_queue_->push(temp_user);
+  	          game_queue_ = std::move(game_queue_manager_.get_game_queue(find_game_packet_.get_game_type()));
+		  user_ = std::make_shared<User>(find_game_packet_.get_user_id(),
+				                 socket_.remote_endpoint().address().to_string(),
+				                 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1, _2),
+		                                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
+		  std::cout << "ID: " << user_->get_user_id() << std::endl;
+  	          game_queue_->push(user_);
 	        }
 	        else
 	        {

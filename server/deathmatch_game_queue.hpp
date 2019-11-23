@@ -14,11 +14,11 @@ class DeathmatchGameQueue : public GameQueue
 public:
   DeathmatchGameQueue();
 
-  void push(User user);
+  void push(std::shared_ptr<Matchmaking::User>& user);
 
-  User pop();
+  std::weak_ptr<User> pop();
   
-  bool erase(User& user_to_erase);
+  bool erase(std::shared_ptr<User>& user_to_erase);
   
   void prepare_game();
 

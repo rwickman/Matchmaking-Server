@@ -55,9 +55,9 @@ private:
   FindGamePacket find_game_packet_;
   JoinPacket join_packet_;
   StartGameCallback* start_game_callback_;
-  GameQueue* game_queue_;
   GameQueueManager& game_queue_manager_;
-  User* user_;
+  std::shared_ptr<GameQueue> game_queue_;
+  std::shared_ptr<User> user_;
 };
 
 }

@@ -29,19 +29,22 @@ public:
     return cur_queue_size_;
   }
 
-  virtual void push(User user) = 0;
+  virtual void push(std::shared_ptr<Matchmaking::User>& user) = 0;
 
   // Return the user_id of the item that was popped
-  virtual User pop() = 0;
+  virtual std::weak_ptr<User> pop() = 0;
 
   // Erase user from queue. Returns true if user was found and erased.
-  virtual bool erase(User& user_to_erase) = 0;
+  virtual bool erase(std::shared_ptr<User>& user_to_erase) = 0;
 
   virtual void prepare_game() = 0;
   
   virtual void start_game(JoinPacket& join_packet) = 0;
+
 protected:
-  std::queue<User> game_queue_;
+  // Users in queue
+  // Using weak_ptr because connection may get dropped while User in queue
+  std::queue<std::weak_ptr<User>> game_queue_;
   // Keep track of current users in queue and amount of times as user has been added to the queue
   std::unordered_map<std::string, int> user_map_;
   // The game type this queue represents
@@ -49,6 +52,7 @@ protected:
   const int min_game_size_;
   const int max_game_size_;
   size_t cur_queue_size_;
+  bool is_preparing_game_;
 
 };
 

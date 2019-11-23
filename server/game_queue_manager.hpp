@@ -14,10 +14,10 @@ public:
 
   bool is_valid_game_type(GameType game_type);
  
-  GameQueue& get_game_queue(GameType game_type);
+  std::shared_ptr<GameQueue> get_game_queue(GameType game_type);
 
 private:
-  DeathmatchGameQueue deathmatch_game_queue_;
+  std::shared_ptr<DeathmatchGameQueue> deathmatch_game_queue_;
 
 };	
 

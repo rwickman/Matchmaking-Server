@@ -8,9 +8,10 @@ DeathmatchGameQueue::DeathmatchGameQueue() : GameQueue(2, 4, GameType::Deathmatc
 {
 }
 
-void DeathmatchGameQueue::push(User user)
+// TODO: See if passed by reference is better than pass by value
+void DeathmatchGameQueue::push(std::shared_ptr<User>& user)
 {
-  std::string user_id = user.get_user_id();
+  std::string user_id = user->get_user_id();
   std::unordered_map<std::string,int>::iterator user_it = user_map_.find(user_id);
   // Only add user_id to queue if not already found or if erased previously
   if (user_it == user_map_.end())
@@ -29,9 +30,9 @@ void DeathmatchGameQueue::push(User user)
     std::cout << "AMOUNT OF TIMES ADDED " << user_id << ": " <<  user_it->second << std::endl;  
   }
   
-  game_queue_.push(user);
+  game_queue_.push(std::weak_ptr<User>(user));
   
-  if (cur_queue_size_ >= min_game_size_)
+  if (cur_queue_size_ >= min_game_size_ && !is_preparing_game_)
   {
     // TODO: Check if game is already is session and is joinable
     std::cout << "READY TO START GAME" << std::endl;
@@ -40,21 +41,49 @@ void DeathmatchGameQueue::push(User user)
 
 }
 
-User DeathmatchGameQueue::pop()
+std::weak_ptr<User> DeathmatchGameQueue::pop()
 {
-  User next_user = game_queue_.front();
+  if (cur_queue_size_ <= 0)
+  {
+    return std::weak_ptr<User>();
+  }
+
+  auto next_user = game_queue_.front().lock();
   game_queue_.pop();
+  while (!next_user)
+  {
+    if (game_queue_.size() <= 0)
+    {
+      std::cout << "The game queue is empty when it should not be!" << std::endl;
+      cur_queue_size_ = 0;
+      return std::weak_ptr<User>();
+    }
+    auto next_user = game_queue_.front().lock();
+    game_queue_.pop();
+  } 
 
   // While the user is duplicated in the queue
-  std::unordered_map<std::string,int>::iterator user_it = user_map_.find(next_user.get_user_id());
+  std::unordered_map<std::string,int>::iterator user_it = user_map_.find(next_user->get_user_id());
   while (user_it->second >= 2)
   {
     user_it->second -= 1;
     
-    next_user = game_queue_.front();
+    next_user = game_queue_.front().lock();
     game_queue_.pop();
+    while (!next_user)
+    {
+      if (game_queue_.size() <= 0)
+      {
+        std::cout << "The game queue is empty when it should not be!" << std::endl;
+        cur_queue_size_ = 0;
+        return std::weak_ptr<User>();
+      }
+      next_user = game_queue_.front().lock();
+      game_queue_.pop();
+    }
 
-    user_it = user_map_.find(next_user.get_user_id());
+
+    user_it = user_map_.find(next_user->get_user_id());
   }
 
   // Remove popped user from map 
@@ -63,13 +92,14 @@ User DeathmatchGameQueue::pop()
   return next_user;
 }
 
-bool DeathmatchGameQueue::erase(User& user_to_erase)
+bool DeathmatchGameQueue::erase(std::shared_ptr<User>& user_to_erase)
 {
-  std::unordered_map<std::string,int>::iterator user_it = user_map_.find(user_to_erase.get_user_id());
+  std::cout << "CALLED ERASE ON USER ID " << user_to_erase->get_user_id() <<std::endl;
+  std::unordered_map<std::string,int>::iterator user_it = user_map_.find(user_to_erase->get_user_id());
   if (user_it != user_map_.end())
   {
     // This will make it so when it pops off the queue it will not be added
-    user_it->second = 0;
+    user_map_.erase(user_it);
     cur_queue_size_ -= 1;
     std::cout << "ERASED USER " << user_it->first << std::endl;
     return true;
@@ -80,12 +110,21 @@ bool DeathmatchGameQueue::erase(User& user_to_erase)
   }
 }
 
-
 void DeathmatchGameQueue::prepare_game()
 {
+  is_preparing_game_ = true;
   // Pick the user that will act as the server
-  User user_host = pop();
-  user_host.host_callback_(boost::bind(&Matchmaking::DeathmatchGameQueue::start_game, this, _1), game_type_); 
+  auto user_host(std::move(pop()).lock());
+  if (!user_host)
+  {
+    is_preparing_game_ = false;
+  }
+  else
+  {
+  
+    user_host->host_callback_(boost::bind(
+			    &Matchmaking::DeathmatchGameQueue::start_game, this, _1), game_type_); 
+  }
 }
 
 void DeathmatchGameQueue::start_game(JoinPacket& join_packet)
@@ -94,11 +133,15 @@ void DeathmatchGameQueue::start_game(JoinPacket& join_packet)
   int cur_game_size = 1; 
   while(cur_queue_size_ > 0 && cur_game_size < max_game_size_)
   {
-    User cur_user = pop();
-    std::cout << "ADDING USER: " << cur_user.get_user_id() << std::endl;
-    cur_game_size += 1;
-    cur_user.join_callback_(join_packet);
+    auto cur_user(std::move(pop()).lock());
+    if (cur_user)
+    {
+      std::cout << "ADDING USER: " << cur_user->get_user_id() << std::endl;
+      cur_game_size += 1;
+      cur_user->join_callback_(join_packet);
+    }
   }
+  is_preparing_game_ = false;
 }
 
 }
