@@ -138,7 +138,7 @@ void TCPConnection::do_read_join_header()
       {
         if (!ec)
 	{
-	  do_read_join_header();
+	  do_read_join_body();
 	}
       });
 }
