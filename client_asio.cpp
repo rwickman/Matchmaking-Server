@@ -5,6 +5,9 @@
 #include <nlohmann/json.hpp>
 
 #include "server/find_game_packet.hpp"
+#include "server/join_packet.hpp"
+#include "server/host_packet.hpp"
+#include "server/packet.hpp"
 
 using boost::asio::ip::tcp;
 
@@ -48,28 +51,37 @@ int main(int argc, char* argv[])
     // Copy into find_game packet
     j_str.copy(find_game_packet.body(), j_str.size());
     std::string temp(find_game_packet.body());
-    std::cout << "BODY: " << find_game_packet.body() << std::endl;
-    
     bytes_written = socket.write_some(boost::asio::buffer(find_game_packet.body(), find_game_packet.body_length()));
     std::cout << bytes_written << std::endl;
-  /* 
-    for (;;)
-    {
-      //boost::array<char, 128> buf;
-      //size_t len = socket.read_some(boost::asio::buffer(buf), error);
 
-      if (error == boost::asio::error::eof)
-        break; // Connection closed cleanly by peer.
-      else if (error)
-        throw boost::system::system_error(error); // Some other error.
-      //std::string server_str(buf.data(), len);
-      //nlohmann::json server_rsp = nlohmann::json::parse(server_str);
-      //std::string ip = server_rsp["IP"].get<std::string>();
-      //std::cout << "localhost" << std::endl;
-      //std::cout << ip << std::endl;
-      //std::cout.write(buf.data(), len);
+
+    std::cin.ignore();
+    
+    char packet_length[find_game_packet.header_length];
+    size_t bytes_read =  socket.read_some(boost::asio::buffer(packet_length, find_game_packet.header_length));
+    size_t data_length = std::stoi(packet_length);
+    
+    char packet_data[data_length];
+    socket.read_some(boost::asio::buffer(packet_data, data_length));
+    std::string packet_str(packet_data, data_length);
+    nlohmann::json packet_json =  nlohmann::json::parse(packet_str);
+
+    int packet_type = packet_json["Packet Type"].get<int>();
+    if (packet_type == 3)
+    {
+      // Create join packet and send to all users
+      Matchmaking::JoinPacket join_packet("localhost", "12000");
+      join_packet.encode();
+      std::cout.write(join_packet.data(), join_packet.header_length);
+      std::cout << std::endl;
+      std::cout.write(join_packet.data(), join_packet.body_length());
+      socket.write_some(boost::asio::buffer(join_packet.data(), join_packet.length()));
     }
-  */
+    else if (packet_type == 2)
+    {
+      // Join other persons game
+      std::cout << "Joining Game: " << packet_json["IP"].get<std::string>() << ":" << packet_json["PID"].get<std::string>();
+    }
   }
   catch (std::exception& e)
   {
