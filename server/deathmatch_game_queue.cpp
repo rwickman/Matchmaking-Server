@@ -121,13 +121,12 @@ void DeathmatchGameQueue::prepare_game()
   }
   else
   {
-  
     user_host->host_callback_(boost::bind(
 			    &Matchmaking::DeathmatchGameQueue::start_game, this, _1), game_type_); 
   }
 }
 
-void DeathmatchGameQueue::start_game(JoinPacket& join_packet)
+void DeathmatchGameQueue::start_game(JoinPacket join_packet)
 {
   // Initialize to 1 to account for the server
   int cur_game_size = 1; 
@@ -136,7 +135,7 @@ void DeathmatchGameQueue::start_game(JoinPacket& join_packet)
     auto cur_user(std::move(pop()).lock());
     if (cur_user)
     {
-      std::cout << "ADDING USER: " << cur_user->get_user_id() << std::endl;
+      std::cout << "ADDING USER TO GAME: " << cur_user->get_user_id() << std::endl;
       cur_game_size += 1;
       cur_user->join_callback_(join_packet);
     }

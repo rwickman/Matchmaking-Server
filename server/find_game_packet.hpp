@@ -24,7 +24,7 @@ public:
 
   GameType get_game_type();
 
-  bool encode_body();
+  bool encode();
 
   bool decode_body();
 

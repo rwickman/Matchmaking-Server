@@ -20,6 +20,7 @@
 
 namespace Matchmaking
 {
+class ConnectionLock;
 
 using boost::asio::ip::tcp;
 
@@ -54,11 +55,28 @@ private:
   tcp::socket socket_;
   FindGamePacket find_game_packet_;
   JoinPacket join_packet_;
-  StartGameCallback* start_game_callback_;
+  std::shared_ptr<StartGameCallback> start_game_callback_;
   GameQueueManager& game_queue_manager_;
   std::shared_ptr<GameQueue> game_queue_;
   std::shared_ptr<User> user_;
+  // As long as something as access to shared pointer this connection will alive
+  // In the futrue this may need to be fixed
+  std::unique_ptr<ConnectionLock> con_lock_;
 };
+
+class ConnectionLock
+{
+public:
+  ConnectionLock()
+  {}
+  ConnectionLock(boost::shared_ptr<TCPConnection> con)
+  : con_(con)
+  {
+
+  }
+  boost::shared_ptr<TCPConnection> con_;
+};
+
 
 }
 #endif // MATCHMAKING_TCP_CONNECTION_HPP

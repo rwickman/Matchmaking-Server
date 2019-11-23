@@ -5,17 +5,15 @@ namespace Matchmaking {
 TCPConnection::TCPConnection(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager)
   : socket_(io_context)
   , game_queue_manager_(game_queue_manager)
+  , con_lock_(std::make_unique<ConnectionLock>())
 {
 }
 
 TCPConnection::~TCPConnection()
 {
   // Remove this user from the queue
-
   if (game_queue_ != NULL)
   {
-    std::cout << "QUEUE NOT NULL" << std::endl;
-    std::cout << "USER: " << user_->get_user_id() << std::endl;
     game_queue_->erase(user_);
   }
 }
@@ -38,6 +36,7 @@ void TCPConnection::start()
 
 void TCPConnection::do_read_find_game_header()
 {
+  con_lock_->con_ = shared_from_this();
   try
   {
     auto self(shared_from_this());
@@ -86,7 +85,6 @@ void TCPConnection::do_read_find_game_body()
 				                 socket_.remote_endpoint().address().to_string(),
 				                 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1, _2),
 		                                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
-		  std::cout << "ID: " << user_->get_user_id() << std::endl;
   	          game_queue_->push(user_);
 	        }
 	        else
@@ -114,18 +112,16 @@ void TCPConnection::do_read_find_game_body()
 
 void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& host_game_type)
 {
-  start_game_callback_ = &start_game_callback;
+  start_game_callback_ = std::make_shared<StartGameCallback>(start_game_callback);
   HostPacket host_packet(host_game_type);
-  // TODO: See if both of these encode statements can be replaced with a single encode method in Packet class
-  host_packet.encode_body();
-  host_packet.encode_header();
+  host_packet.encode();
   boost::asio::async_write(socket_,
-      boost::asio::buffer(host_packet.data(), host_packet.body_length()),
+      boost::asio::buffer(host_packet.data(), host_packet.length()),
       [this](boost::system::error_code ec, std::size_t /*length*/)
       {
         if (!ec)
 	{
-	  // Call a read to read the process ID back from the user
+          do_read_join_header();
 	}
       });
 }
@@ -134,10 +130,11 @@ void TCPConnection::do_read_join_header()
 {
   boost::asio::async_read(socket_,
       boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
-      [this](boost::system::error_code ec, std::size_t /*length*/)
+      [this](boost::system::error_code ec, std::size_t length)
       {
         if (!ec)
 	{
+	  join_packet_.decode_header();
 	  do_read_join_body();
 	}
       });
@@ -151,18 +148,27 @@ void TCPConnection::do_read_join_body()
      {
        if (!ec)
        {
-         (*start_game_callback_)(join_packet_);
+	 if (join_packet_.decode_body())
+	 {
+           (*start_game_callback_)(join_packet_);
+           // release the lock
+	   con_lock_ = nullptr;
+	 }
+	 else
+	 {
+	 std::cerr << "COULD NOT DECODE JOIN PACKET FROM HOST!" << std::endl;
+	 }
        }
      });
 }
 void TCPConnection::join_game(JoinPacket join_packet)
 {
-  std::cout << "Finding game with " << join_packet.get_ip_address() << ":"<< join_packet.get_pid() << std::endl;
   boost::asio::async_write(socket_,
-      boost::asio::buffer(join_packet.data(), join_packet_.length()),
-      [this](boost::system::error_code ec, std::size_t /*length*/)
+      boost::asio::buffer(join_packet.data(), join_packet.length()),
+      [this](boost::system::error_code ec, std::size_t length)
       {
-        // Do something after write.
+        // release the lock
+        con_lock_ = nullptr;
       });
 }
 

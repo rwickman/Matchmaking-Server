@@ -17,7 +17,7 @@ namespace Matchmaking
     return game_type_;
   }
 
-  bool FindGamePacket::encode_body()
+  bool FindGamePacket::encode()
   {
     try
     {
@@ -27,6 +27,7 @@ namespace Matchmaking
       find_game_json["Game Type"] = game_type_;
       std::string find_game_str(find_game_json.dump());
       set_body_length(find_game_str.size());
+      encode_header();
       find_game_str.copy(body(), find_game_str.size());
       return true;
     }

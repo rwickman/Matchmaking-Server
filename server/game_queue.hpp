@@ -39,7 +39,7 @@ public:
 
   virtual void prepare_game() = 0;
   
-  virtual void start_game(JoinPacket& join_packet) = 0;
+  virtual void start_game(JoinPacket join_packet) = 0;
 
 protected:
   // Users in queue

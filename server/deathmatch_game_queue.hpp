@@ -22,7 +22,7 @@ public:
   
   void prepare_game();
 
-  void start_game(JoinPacket& join_packet);
+  void start_game(JoinPacket join_packet);
 };
 
 }
