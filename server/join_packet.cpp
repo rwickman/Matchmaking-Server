@@ -29,7 +29,7 @@ namespace Matchmaking
     try
     {
       nlohmann::json join_json;
-      join_json["Packet Type"] = (int) packet_type_;
+      join_json["packetType"] = (int) packet_type_;
       join_json["IP"] = ip_address_;
       join_json["PID"] = pid_;
       std::string join_str(join_json.dump());
@@ -54,7 +54,7 @@ namespace Matchmaking
       // In the future consider doing some authentication of User ID
       ip_address_ = join_json["IP"].get<std::string>();
       pid_ = join_json["PID"].get<std::string>();
-      //packet_type_ = join_json["Packet Type"].get<PacketType>();
+      //packet_type_ = join_json["packetType"].get<PacketType>();
       return true;
     }
     catch(std::exception& e)

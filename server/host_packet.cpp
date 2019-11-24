@@ -24,8 +24,8 @@ namespace Matchmaking
     try
     {
       nlohmann::json host_json;
-      host_json["Packet Type"] = (int) packet_type_;
-      host_json["Game Type"] = game_type_;
+      host_json["packetType"] = (int) packet_type_;
+      host_json["gameType"] = game_type_;
       std::string host_str(host_json.dump());
       set_body_length(host_str.size());
       encode_header();
@@ -44,8 +44,8 @@ namespace Matchmaking
     try
     {
       nlohmann::json host_json = nlohmann::json::parse(body());
-      game_type_ = static_cast<GameType>(host_json["Game Type"].get<int>());
-      //packet_type_ = host_json["Packet Type"].get<PacketType>();
+      game_type_ = static_cast<GameType>(host_json["gameType"].get<int>());
+      //packet_type_ = host_json["packetType"].get<PacketType>();
       return true;
     }
     catch(std::exception& e)

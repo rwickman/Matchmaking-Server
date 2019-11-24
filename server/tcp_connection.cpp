@@ -31,12 +31,12 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
+  con_lock_->con_ = shared_from_this();
   do_read_find_game_header();	
 }
 
 void TCPConnection::do_read_find_game_header()
 {
-  con_lock_->con_ = shared_from_this();
   try
   {
     auto self(shared_from_this());
@@ -51,12 +51,14 @@ void TCPConnection::do_read_find_game_header()
           else
           {
             std::cerr << "ERROR GETTING HEADER FOR JOIN" << std::endl;
-          }
+            con_lock_ = nullptr;
+	  }
         });
   }
   catch(std::exception& e)
   {
     std::cerr << e.what() << std::endl;
+    con_lock_ = nullptr;
   }
 }
 
@@ -93,20 +95,27 @@ void TCPConnection::do_read_find_game_body()
 	        }
 	      }
   	    }
+	    else
+	    {
+	      con_lock_ = nullptr;
+	    }
 	  }
 	  catch(std::invalid_argument& e)
 	  {
 	    std::cerr << e.what() << std::endl;
+	    con_lock_ = nullptr;
 	  }
 	  catch(std::exception& e)
 	  {
 	    std::cerr << e.what() << std::endl;
+	    con_lock_ = nullptr;
 	  }
         });
   }
   catch(std::exception& e)
   {
     std::cerr << e.what() << std::endl;
+    con_lock_ = nullptr;
   }
 }
 
@@ -123,6 +132,10 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& h
 	{
           do_read_join_header();
 	}
+	else
+	{
+	  con_lock_ = nullptr;
+	}
       });
 }
 
@@ -136,6 +149,10 @@ void TCPConnection::do_read_join_header()
 	{
 	  join_packet_.decode_header();
 	  do_read_join_body();
+	}
+	else
+	{
+	  con_lock_ = nullptr;
 	}
       });
 }

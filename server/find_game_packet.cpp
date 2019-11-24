@@ -22,9 +22,9 @@ namespace Matchmaking
     try
     {
       nlohmann::json find_game_json;
-      find_game_json["Packet Type"] = (int) packet_type_;
-      find_game_json["User ID"] = user_id_; 
-      find_game_json["Game Type"] = game_type_;
+      find_game_json["packetType"] = (int) packet_type_;
+      find_game_json["userID"] = user_id_; 
+      find_game_json["gameType"] = game_type_;
       std::string find_game_str(find_game_json.dump());
       set_body_length(find_game_str.size());
       encode_header();
@@ -44,9 +44,9 @@ namespace Matchmaking
     {
       nlohmann::json find_game_json = nlohmann::json::parse(body());
       // In the future consider doing some authentication of User ID
-      user_id_ = find_game_json["User ID"].get<std::string>();
-      game_type_ = static_cast<GameType>(find_game_json["Game Type"].get<int>());
-      //packet_type_ = find_game_json["Packet Type"].get<PacketType>();
+      user_id_ = find_game_json["userID"].get<std::string>();
+      game_type_ = static_cast<GameType>(find_game_json["gameType"].get<int>());
+      //packet_type_ = find_game_json["packetType"].get<PacketType>();
       return true;
     }
     catch(std::exception& e)

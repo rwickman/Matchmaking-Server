@@ -31,8 +31,8 @@ int main(int argc, char* argv[])
     boost::asio::connect(socket, endpoints);
     
     nlohmann::json j;
-    j["User ID"] =  argv[2];
-    j["Game Type"] = std::stoi(argv[3]);
+    j["userID"] =  argv[2];
+    j["gameType"] = std::stoi(argv[3]);
     
     
     std::string j_str = j.dump();
@@ -66,7 +66,7 @@ int main(int argc, char* argv[])
     std::string packet_str(packet_data, data_length);
     nlohmann::json packet_json =  nlohmann::json::parse(packet_str);
 
-    int packet_type = packet_json["Packet Type"].get<int>();
+    int packet_type = packet_json["packetType"].get<int>();
     if (packet_type == 3)
     {
       // Create join packet and send to all users
