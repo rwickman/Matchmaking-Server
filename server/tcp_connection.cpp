@@ -11,6 +11,7 @@ TCPConnection::TCPConnection(boost::asio::io_context& io_context, GameQueueManag
 
 TCPConnection::~TCPConnection()
 {
+  std::cout << "DESTROYING TCPConnection" << std::endl;
   // Remove this user from the queue
   if (game_queue_ != NULL)
   {
@@ -42,7 +43,7 @@ void TCPConnection::do_read_find_game_header()
     auto self(shared_from_this());
     boost::asio::async_read(socket_,
         boost::asio::buffer(find_game_packet_.data(), FindGamePacket::header_length),
-        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        [this, self](boost::system::error_code ec, std::size_t length)
         {
           if (!ec && find_game_packet_.decode_header())
           {
@@ -69,7 +70,7 @@ void TCPConnection::do_read_find_game_body()
     auto self(shared_from_this());
     boost::asio::async_read(socket_,
         boost::asio::buffer(find_game_packet_.body(), find_game_packet_.body_length()),
-        [this, self](boost::system::error_code ec, std::size_t /*length*/)
+        [this, self](boost::system::error_code ec, std::size_t length)
         {
 	  try
 	  {
@@ -93,6 +94,10 @@ void TCPConnection::do_read_find_game_body()
 	        {
 	          throw std::invalid_argument( "Invalid Game Type!" );
 	        }
+	      }
+	      else
+	      {
+	        con_lock_ = nullptr;
 	      }
   	    }
 	    else
