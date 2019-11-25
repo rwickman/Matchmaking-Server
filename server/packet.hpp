@@ -14,7 +14,7 @@ class Packet
 {
 public:
   enum { header_length = 8 };
-  enum { max_body_length = 2056 };
+  enum { max_body_length = 512 };
 
   Packet();
   
