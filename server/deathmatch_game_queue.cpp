@@ -128,6 +128,7 @@ void DeathmatchGameQueue::prepare_game()
 
 void DeathmatchGameQueue::start_game(JoinPacket join_packet)
 {
+  join_packet.encode();
   // Initialize to 1 to account for the server
   int cur_game_size = 1; 
   while(cur_queue_size_ > 0 && cur_game_size < max_game_size_)
