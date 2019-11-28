@@ -129,9 +129,10 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& h
   start_game_callback_ = std::make_shared<StartGameCallback>(start_game_callback);
   HostPacket host_packet(host_game_type);
   host_packet.encode();
+  auto self(shared_from_this());
   boost::asio::async_write(socket_,
       boost::asio::buffer(host_packet.data(), host_packet.length()),
-      [this](boost::system::error_code ec, std::size_t /*length*/)
+      [this, self](boost::system::error_code ec, std::size_t /*length*/)
       {
         if (!ec)
 	{
@@ -146,9 +147,10 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& h
 
 void TCPConnection::do_read_join_header()
 {
+  auto self(shared_from_this());
   boost::asio::async_read(socket_,
       boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
-      [this](boost::system::error_code ec, std::size_t length)
+      [this, self](boost::system::error_code ec, std::size_t length)
       {
         if (!ec)
 	{
@@ -164,9 +166,10 @@ void TCPConnection::do_read_join_header()
 
 void TCPConnection::do_read_join_body()
 {
+  auto self(shared_from_this());
   boost::asio::async_read(socket_,
       boost::asio::buffer(join_packet_.body(), join_packet_.body_length()),
-      [this](boost::system::error_code ec, std::size_t /*length*/)
+      [this, self](boost::system::error_code ec, std::size_t /*length*/)
      {
        if (!ec)
        {
@@ -186,9 +189,10 @@ void TCPConnection::do_read_join_body()
 
 void TCPConnection::do_read_ack()
 {
+  auto self(shared_from_this());
   boost::asio::async_read(socket_,
       boost::asio::buffer(ack_packet_.body(), ack_packet_.body_length()),
-      [this](boost::system::error_code ec, std::size_t /*length*/)
+      [this, self](boost::system::error_code ec, std::size_t /*length*/)
      {
        if (!ec)
        {
@@ -209,9 +213,10 @@ void TCPConnection::do_read_ack()
 
 void TCPConnection::join_game(JoinPacket join_packet)
 {
+  auto self(shared_from_this());
   boost::asio::async_write(socket_,
       boost::asio::buffer(join_packet.data(), join_packet.length()),
-      [this](boost::system::error_code ec, std::size_t length)
+      [this, self](boost::system::error_code ec, std::size_t length)
       {
         // release the lock
         con_lock_ = nullptr;
