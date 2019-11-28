@@ -6,6 +6,7 @@ enum PacketType {
   FindGame,
   Join,
   Host,
+  Ack
 };
 
 #endif // MATCHMAKING_PACKET_TYPE_HPP
