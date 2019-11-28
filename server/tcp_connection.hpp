@@ -12,9 +12,11 @@
 #include "find_game_packet.hpp"
 #include "join_packet.hpp"
 #include "host_packet.hpp"
+#include "ack_packet.hpp"
 #include "game_queue.hpp"
 #include "game_queue_manager.hpp"
 #include "game_type.hpp"
+#include "ack_type.hpp"
 #include "user.hpp"
 
 
@@ -50,11 +52,14 @@ private:
 
   void do_read_join_body();
 
+  void do_read_ack();
+
   void join_game(JoinPacket join_packet);
 
   tcp::socket socket_;
   FindGamePacket find_game_packet_;
   JoinPacket join_packet_;
+  AckPacket ack_packet_;
   std::shared_ptr<StartGameCallback> start_game_callback_;
   GameQueueManager& game_queue_manager_;
   std::shared_ptr<GameQueue> game_queue_;

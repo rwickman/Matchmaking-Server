@@ -183,6 +183,30 @@ void TCPConnection::do_read_join_body()
        }
      });
 }
+
+void TCPConnection::do_read_ack()
+{
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(ack_packet_.body(), ack_packet_.body_length()),
+      [this](boost::system::error_code ec, std::size_t /*length*/)
+     {
+       if (!ec)
+       {
+         if (ack_packet_.decode_body())
+         {
+	   if (ack_packet_.get_ack_type() == AckType::Error)
+	   {
+	     throw ack_error();
+	   }
+         }
+         else
+         {
+         std::cerr << "COULD NOT DECODE ACK PACKET FROM CLIENT!" << std::endl;
+         }
+       }
+     });
+}
+
 void TCPConnection::join_game(JoinPacket join_packet)
 {
   boost::asio::async_write(socket_,
