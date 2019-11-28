@@ -7,6 +7,7 @@
 #include "server/find_game_packet.hpp"
 #include "server/join_packet.hpp"
 #include "server/host_packet.hpp"
+#include "server/ack_packet.hpp"
 #include "server/packet.hpp"
 
 using boost::asio::ip::tcp;
@@ -55,8 +56,7 @@ int main(int argc, char* argv[])
     std::cout << bytes_written << std::endl;
 
 
-    std::cin.ignore();
-    
+    //std::cin.ignore();
     char packet_length[find_game_packet.header_length];
     size_t bytes_read =  socket.read_some(boost::asio::buffer(packet_length, find_game_packet.header_length));
     size_t data_length = std::stoi(packet_length);
@@ -65,7 +65,7 @@ int main(int argc, char* argv[])
     socket.read_some(boost::asio::buffer(packet_data, data_length));
     std::string packet_str(packet_data, data_length);
     nlohmann::json packet_json =  nlohmann::json::parse(packet_str);
-
+    
     int packet_type = packet_json["packetType"].get<int>();
     if (packet_type == 3)
     {
@@ -81,6 +81,10 @@ int main(int argc, char* argv[])
     {
       // Join other persons game
       std::cout << "Joining Game: " << packet_json["IP"].get<std::string>() << ":" << packet_json["PID"].get<std::string>();
+    }
+    else
+    {
+      //send ACK ERROR
     }
   }
   catch (std::exception& e)
