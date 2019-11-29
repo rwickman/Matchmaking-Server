@@ -5,7 +5,6 @@ namespace Matchmaking {
 TCPConnection::TCPConnection(boost::asio::io_context& io_context, GameQueueManager& game_queue_manager)
   : socket_(io_context)
   , game_queue_manager_(game_queue_manager)
-  , con_lock_(std::make_unique<ConnectionLock>())
 {
 }
 
@@ -32,7 +31,6 @@ tcp::socket& TCPConnection::socket()
 
 void TCPConnection::start()
 {
-  con_lock_->con_ = shared_from_this();
   do_read_find_game_header();	
 }
 
@@ -52,14 +50,12 @@ void TCPConnection::do_read_find_game_header()
           else
           {
             std::cerr << "ERROR GETTING HEADER FOR JOIN" << std::endl;
-            con_lock_ = nullptr;
 	  }
         });
   }
   catch(std::exception& e)
   {
     std::cerr << e.what() << std::endl;
-    con_lock_ = nullptr;
   }
 }
 
@@ -89,38 +85,28 @@ void TCPConnection::do_read_find_game_body()
 				                 boost::bind(&Matchmaking::TCPConnection::host_game, this, _1, _2),
 		                                 boost::bind(&Matchmaking::TCPConnection::join_game, this, _1));
   	          game_queue_->push(user_);
+		  do_read_ack_header();
 	        }
 	        else
 	        {
 	          throw std::invalid_argument( "Invalid Game Type!" );
 	        }
 	      }
-	      else
-	      {
-	        con_lock_ = nullptr;
-	      }
   	    }
-	    else
-	    {
-	      con_lock_ = nullptr;
-	    }
 	  }
 	  catch(std::invalid_argument& e)
 	  {
 	    std::cerr << e.what() << std::endl;
-	    con_lock_ = nullptr;
 	  }
 	  catch(std::exception& e)
 	  {
 	    std::cerr << e.what() << std::endl;
-	    con_lock_ = nullptr;
 	  }
         });
   }
   catch(std::exception& e)
   {
     std::cerr << e.what() << std::endl;
-    con_lock_ = nullptr;
   }
 }
 
@@ -136,11 +122,10 @@ void TCPConnection::host_game(StartGameCallback start_game_callback, GameType& h
       {
         if (!ec)
 	{
-          do_read_join_header();
+	  is_hosting_ = true;
 	}
 	else
 	{
-	  con_lock_ = nullptr;
 	}
       });
 }
@@ -152,14 +137,10 @@ void TCPConnection::do_read_join_header()
       boost::asio::buffer(join_packet_.data(), JoinPacket::header_length),
       [this, self](boost::system::error_code ec, std::size_t length)
       {
-        if (!ec)
+        if (!ec && join_packet_.decode_header())
 	{
-	  join_packet_.decode_header();
+	  std::cout << "DECODED JOIN HEADER: " << join_packet_.body_length() << std::endl;
 	  do_read_join_body();
-	}
-	else
-	{
-	  con_lock_ = nullptr;
 	}
       });
 }
@@ -177,7 +158,6 @@ void TCPConnection::do_read_join_body()
 	 {
            (*start_game_callback_)(join_packet_);
            // release the lock
-	   con_lock_ = nullptr;
 	 }
 	 else
 	 {
@@ -187,26 +167,59 @@ void TCPConnection::do_read_join_body()
      });
 }
 
-void TCPConnection::do_read_ack()
+void TCPConnection::do_read_ack_header()
 {
   auto self(shared_from_this());
   boost::asio::async_read(socket_,
-      boost::asio::buffer(ack_packet_.body(), ack_packet_.body_length()),
-      [this, self](boost::system::error_code ec, std::size_t /*length*/)
+      boost::asio::buffer(ack_packet_.data(), ack_packet_.header_length),
+      [this, self](boost::system::error_code ec, std::size_t length)
      {
+       std::cout << "LENGTH: " << length << std::endl;
+       std::cout << ec << std::endl;
+       if (!ec && ack_packet_.decode_header())
+       {
+	 do_read_ack_body();
+       }
+       else
+       {
+         //socket_.close();
+       }
+     });
+}
+
+void TCPConnection::do_read_ack_body()
+{
+  auto self(shared_from_this());
+  std::cout << "BODY LEN: " << ack_packet_.body_length() << std::endl;
+  boost::asio::async_read(socket_,
+      boost::asio::buffer(ack_packet_.body(), ack_packet_.body_length()),
+      [this, self](boost::system::error_code ec, std::size_t length)
+     {
+       std::cout << "LENGTH: " << length << std::endl;
+       std::cout << ec << std::endl;
        if (!ec)
        {
          if (ack_packet_.decode_body())
          {
+	   std::cout << "READ ACK" << std::endl;
 	   if (ack_packet_.get_ack_type() == AckType::Error)
 	   {
 	     throw ack_error();
 	   }
+	   else if (is_hosting_)
+	   {
+             do_read_join_header();
+	   }
          }
          else
          {
-         std::cerr << "COULD NOT DECODE ACK PACKET FROM CLIENT!" << std::endl;
+	   //socket_.close();
+	     //throw ack_error();
          }
+       }
+       else
+       {
+         //socket_.close()
        }
      });
 }
@@ -219,7 +232,6 @@ void TCPConnection::join_game(JoinPacket join_packet)
       [this, self](boost::system::error_code ec, std::size_t length)
       {
         // release the lock
-        con_lock_ = nullptr;
       });
 }
 

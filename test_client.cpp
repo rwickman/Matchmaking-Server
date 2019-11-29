@@ -8,6 +8,7 @@
 #include "server/join_packet.hpp"
 #include "server/host_packet.hpp"
 #include "server/ack_packet.hpp"
+#include "server/ack_type.hpp"
 #include "server/packet.hpp"
 
 using boost::asio::ip::tcp;
@@ -56,7 +57,7 @@ int main(int argc, char* argv[])
     std::cout << bytes_written << std::endl;
 
 
-    //std::cin.ignore();
+    std::cin.ignore();
     char packet_length[find_game_packet.header_length];
     size_t bytes_read =  socket.read_some(boost::asio::buffer(packet_length, find_game_packet.header_length));
     size_t data_length = std::stoi(packet_length);
@@ -72,18 +73,29 @@ int main(int argc, char* argv[])
       // Create join packet and send to all users
       Matchmaking::JoinPacket join_packet("localhost", "12000");
       join_packet.encode();
-      std::cout.write(join_packet.data(), join_packet.header_length);
+      std::cout.write(join_packet.data(), join_packet.length());
       std::cout << std::endl;
-      std::cout.write(join_packet.data(), join_packet.body_length());
+      //std::cout.write(join_packet.data(), join_packet.body_length());
+      
+      Matchmaking::AckPacket ack(static_cast<AckType>(0));
+      ack.encode();
+      socket.write_some(boost::asio::buffer(ack.data(), ack.length()));
+      
       socket.write_some(boost::asio::buffer(join_packet.data(), join_packet.length()));
     }
     else if (packet_type == 2)
     {
+      Matchmaking::AckPacket ack(static_cast<AckType>(0));
+      ack.encode();
+      socket.write_some(boost::asio::buffer(ack.data(), ack.length()));
       // Join other persons game
       std::cout << "Joining Game: " << packet_json["IP"].get<std::string>() << ":" << packet_json["PID"].get<std::string>();
     }
     else
     {
+      Matchmaking::AckPacket ack(static_cast<AckType>(1));
+      ack.encode();
+      socket.write_some(boost::asio::buffer(ack.data(), ack.length()));
       //send ACK ERROR
     }
   }

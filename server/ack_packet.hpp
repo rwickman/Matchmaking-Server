@@ -18,6 +18,8 @@ public:
 
   AckPacket();
 
+  AckPacket(AckType ack_type);
+
   AckType get_ack_type();
 
   bool encode();

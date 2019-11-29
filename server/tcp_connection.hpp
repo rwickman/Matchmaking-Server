@@ -52,7 +52,9 @@ private:
 
   void do_read_join_body();
 
-  void do_read_ack();
+  void do_read_ack_header();
+  
+  void do_read_ack_body();
 
   void join_game(JoinPacket join_packet);
 
@@ -64,24 +66,10 @@ private:
   GameQueueManager& game_queue_manager_;
   std::shared_ptr<GameQueue> game_queue_;
   std::shared_ptr<User> user_;
+  bool is_hosting_;
   // As long as something as access to shared pointer this connection will alive
   // In the futrue this may need to be fixed
-  std::unique_ptr<ConnectionLock> con_lock_;
 };
-
-class ConnectionLock
-{
-public:
-  ConnectionLock()
-  {}
-  ConnectionLock(boost::shared_ptr<TCPConnection> con)
-  : con_(con)
-  {
-
-  }
-  boost::shared_ptr<TCPConnection> con_;
-};
-
 
 }
 #endif // MATCHMAKING_TCP_CONNECTION_HPP
