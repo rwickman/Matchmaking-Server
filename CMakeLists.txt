@@ -14,8 +14,8 @@ add_subdirectory(nlohmann)
 add_subdirectory(server)
 
 # add the executable
-add_executable(Server server_asio.cpp)
-add_executable(Client client_asio.cpp)
+add_executable(Server server.cpp)
+add_executable(Client test_client.cpp)
 
 target_link_libraries(Server PUBLIC 
                       ${Boost_LIBRARIES}
@@ -27,5 +27,6 @@ target_link_libraries(Client PUBLIC
 		      nlohmann_json
 		      JoinPacket
 		      FindGamePacket
-		      HostPacket)
-
+		      HostPacket
+		      AckPacket
+		      AckType)
