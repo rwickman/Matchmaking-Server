@@ -47,16 +47,33 @@ The users will use TCP, as opposed to UDP, to connect to the matchmaking server 
 The game was developed using the Unity game engine. 
 It is has a main menu that users can use to find a game through the matchamking server or connect to a game directly by using an IP address of the host.
 The actual gameplay is a first-person sword fighting game.
+While I have a good working example for these components, this is far from the final product it will eventually be.
+Thus throughout this paper I will provide incite to where I beleive the application could be improved or expanded on.
 
 \section{Matchmaking Server}
+The majority of the time I spend on this project was focused on the matchmaking server.
+It ended up having a lot more moving components than I first anticipated.
+I used C++ to code everything and CMake to manage the build procces, and I used Boost.Asio to provide asynchronous networking capability.
+The server is made up of a few parts: matchmaking server interface, TCPConnection, and game queue.
 
-The IEEEtran class file is used to format your paper and style the text. All margins, 
-column widths, line spaces, and text fonts are prescribed; please do not 
-alter them. You may note peculiarities. For example, the head margin
-measures proportionately more than is customary. This measurement 
-and others are deliberate, using specifications that anticipate your paper 
-as one part of the entire proceedings, and not as an independent document. 
-Please do not revise any of the current designations.
+\subsection{Mathmaking Server Interface}
+This is the point in which the user will first connect to the server.
+The server is listening on a specified port and accepts incoming requests when the arrive. 
+It asynchronously accepts the requests then initiates a callback that handles setting up the TCP socket to the client.
+This allows for multiple users to connect to the server at once. 
+The socket is constructed by initializing a TCPConnection object that will handle the rest of the users communication to find a game.
+While I did consider creating a new thread for each connection, I did not due to time constraints and not wanting to deal with the complexity of adding multithreading such as locking resources, race conditions, ect..
+When I update this application in the future I will potentially add this feature.
+
+\subsection{TCPConnection}
+The bulk of my time that I spent on the matchmaking server was on the TCPConnection class.
+This is due to many factors such as redesigns, updating call sequences, callbacks, and simply just the overall complexity of this component.
+The job of this component pretains to handling the communication with the client that allows them to connect to a game.
+It does so by sending packets of data that are detailed in particular format.
+The data in the packets are in JSON data format, which uses key-value pairs. 
+This has to be serialized before it is sent over the network and deserialized when it arrives to its destination.
+This works especially well since the data exchange is between the Video Game which is programmed in C# and the server which is programmed in C++ and there are libraries in both that can easily use this data format.
+
 
 \section{Prepare Your Paper Before Styling}
 Before you begin to format your paper, first write and save the content as a 
