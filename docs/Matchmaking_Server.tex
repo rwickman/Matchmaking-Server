@@ -61,7 +61,7 @@ This is the point in which the user will first connect to the server.
 The server is listening on a specified port and accepts incoming requests when the arrive. 
 It asynchronously accepts the requests then initiates a callback that handles setting up the TCP socket to the client.
 This allows for multiple users to connect to the server at once. 
-The socket is constructed by initializing a TCPConnection object that will handle the rest of the users communication to find a game.
+	The socket is constructed by initializing a TCPConnection object that will handle the rest owf the users communication to find a game.
 While I did consider creating a new thread for each connection, I did not due to time constraints and not wanting to deal with the complexity of adding multithreading such as locking resources, race conditions, ect..
 When I update this application in the future I will potentially add this feature.
 
@@ -72,7 +72,32 @@ The job of this component pretains to handling the communication with the client
 It does so by sending packets of data that are detailed in particular format.
 The data in the packets are in JSON data format, which uses key-value pairs. 
 This has to be serialized before it is sent over the network and deserialized when it arrives to its destination.
-This works especially well since the data exchange is between the Video Game which is programmed in C# and the server which is programmed in C++ and there are libraries in both that can easily use this data format.
+This works especially well since the data exchange is between the Video Game which is programmed in C# and the server which is programmed in C++ and there are libraries in both that support the use of this data format.
+The packets themselves were designed to be lightweight and easily extensible.
+While there are a many different packet types I created throughout this project, they all inherit from the parent class Packet.
+The Packet class has members for the header length, maximum body length, body length, a char array to store the data, packet type, functions to access these members, functions to decode and encode the header, and functions to encode and decode the body.
+The functions to encode and decode the body are pure virtual as to enforce the children classes to provide their own implementation to encode and decode the body.
+The reason for doing this is because the information contained in the body of a packet differs between packet types.
+While both the header and the body of a packet are stored in the same char array, they are separate entities.
+The header is what contains the amount of bytes the body of the packet holds.
+This is used to send variable sized packets and so that the receiver of a packet knows exactly how many bytes to read.
+The header, however, is always the same size.
+It currently is only 8 bytes however this and the maximum body length can be changed depending on the requirements of an inheriting child type. \par
+Now, after talking about the data format it uses for interoperability, I will begin explaining the actua job of the TCPConnection class.
+After the client has established a TCP connection with the Matchmaking server, a TCPConnection object is instantiated.
+Then the first thing the client will do is send a FindGamePacket.
+This is one of the packet types that inherit from the Packet superclass.
+All of the subclass types will have the naming scheme of "XXXPacket".
+The FindGamePacket object contains additional members for a unique identifier for the client and the game type the user wants to join.
+This may change in the future to include more information, but this suffices for now.
+Once the server begins to recieve the data for the FindGamePacketin an asynchronous read operation, it will first only read 8 bytes for the header.
+Then, if this is successful, it will decode the header and read the amoount of bytes specified for the body.
+This is done by calling a function from the callback function that reads the header of the packet.
+This function called "do_read_find_game_body" will initiate another asychronous read operation to read the body.
+The once it is done reading the body, it will fire a callback that will add the user to a queue for the specified game type.
+The way the user is pushed on the queue is by first getting a shared pointer to the queue from a queue manager.
+Next, it will create a User object.
+Finally, the User object is pushed on the queue.
 
 
 \section{Prepare Your Paper Before Styling}
