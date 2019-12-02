@@ -18,4 +18,3 @@ sudo ./b2 install threading=multi link=shared && ln -svf detail/sha1.hpp /usr/in
 * Consider using custom deleter for User pointer to log users
 * Allow users to join game in session if possible
 * Consider automatically closing connection if kept on too long
-* Find another way to keep connection alive besides locking the connection
