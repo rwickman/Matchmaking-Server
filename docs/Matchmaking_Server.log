@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.12.3)  3 DEC 2019 15:40
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017/Debian) (preloaded format=pdflatex 2019.12.3)  3 DEC 2019 17:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -420,185 +420,344 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-! You can't use `macro parameter character #' in horizontal mode.
-l.62 ... the front-end video game programmed in C#
-                                                   can use to communicate wi...
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.73 ...and have the naming scheme of "\textlangle
+                                                   packet type\textrangle Pa...
 
 ? 
-! You can't use `macro parameter character #' in horizontal mode.
-l.66 ... is because there are libraries in both C#
-                                                   and C++ that support the ...
 
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.73 ...eme of "\textlangle packet type\textrangle
+                                                   Packet".
 ? 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ] [2]
-Underfull \hbox (badness 5970) in paragraph at lines 193--201
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 ...ns a shared\textunderscore ptr\textlangle
+                                                   TCPConnection\textrangle ...
+
+? 
+
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.179 ...e ptr\textlangle TCPConnection\textrangle
+                                                   object that shares owners...
+
+? 
+
+Underfull \hbox (badness 5970) in paragraph at lines 194--202
 []\OT1/ptm/m/n/10 The func-tion TCP-Con-nec-tion::do[]read[]find[]game[]body
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 193--201
+Underfull \hbox (badness 10000) in paragraph at lines 194--202
 \OT1/ptm/m/n/10 reads the body of the Find-GamePacket from the
  []
 
 
-Underfull \hbox (badness 5403) in paragraph at lines 193--201
+Underfull \hbox (badness 5403) in paragraph at lines 194--202
 \OT1/ptm/m/n/10 client. It is sim-i-lar to what oc-curs in TCP-Con-nec-
  []
 
 
-Underfull \hbox (badness 4328) in paragraph at lines 193--201
+Underfull \hbox (badness 4328) in paragraph at lines 194--202
 \OT1/ptm/m/n/10 tion::do[]read[]find[]game[]body so I will skip some of
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 193--201
-\OT1/ptm/m/n/10 for this asyn-chronous read op-er-a-tion com-mences.
+Underfull \hbox (badness 1983) in paragraph at lines 194--202
+\OT1/ptm/m/n/10 for this asyn-chronous read op-er-a-tion com-mences. First,
  []
 
 
-Underfull \hbox (badness 3250) in paragraph at lines 193--201
-\OT1/ptm/m/n/10 First, it de-codes the body of the packet. Sec-ond, it
+Underfull \hbox (badness 2197) in paragraph at lines 194--202
+\OT1/ptm/m/n/10 game[]queue[]manager[]member vari-able to get the game
  []
 
+<figures/ClientCommunication.png, id=14, 422.57875pt x 432.61626pt>
+File: figures/ClientCommunication.png Graphic file (type png)
+<use figures/ClientCommunication.png>
+Package pdftex.def Info: figures/ClientCommunication.png  used on input line 21
+4.
+(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+<figures/HostCommunication.png, id=16, 422.57875pt x 432.61626pt>
+File: figures/HostCommunication.png Graphic file (type png)
+<use figures/HostCommunication.png>
+Package pdftex.def Info: figures/HostCommunication.png  used on input line 220.
 
-Underfull \hbox (badness 3884) in paragraph at lines 193--201
-\OT1/ptm/m/n/10 uses the game[]queue[]manager[]member vari-able to get
- []
+(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
 
 
-Underfull \hbox (badness 3579) in paragraph at lines 193--201
-\OT1/ptm/m/n/10 the game queue for the game type spec-i-fied in the
- []
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
 
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.232 ...s std::weak\textunderscore ptr\textlangle
+                                                   User\textrangle types. Th...
 
-Underfull \hbox (badness 10000) in paragraph at lines 193--201
-\OT1/ptm/m/n/10 Find-GamePacket ob-ject. Third, if both the pre-vi-ous
- []
+? 
 
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.232 ...underscore ptr\textlangle User\textrangle
+                                                   types. The reason it stor...
+
+? 
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
-[3]
-! Misplaced alignment tab character &.
-l.242 ...ype std::shared\textunderscore ptr<User>&
-                                                   aptly named user.
+[3 <./figures/ClientCommunication.png>]
+Underfull \vbox (badness 1852) has occurred while \output is active []
+
+
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.261 ...ow this naming convention of "\textlangle
+                                                   game type\textrangle Game...
+
 ? 
 
-Underfull \hbox (badness 4084) in paragraph at lines 267--271
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.261 ...tion of "\textlangle game type\textrangle
+                                                   GameQueue".
+? 
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.264 ...std::shared\textunderscore ptr\textlangle
+                                                   User\textrangle \& aptly ...
+
+? 
+
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.264 ...underscore ptr\textlangle User\textrangle
+                                                   \& aptly named user.
+? 
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.278 ...return weak\textunderscore ptr\textlangle
+                                                   User\textrangle ().
+? 
+
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.278 ...underscore ptr\textlangle User\textrangle
+                                                   ().
+? 
+[4 <./figures/HostCommunication.png>]
+Underfull \hbox (badness 4084) in paragraph at lines 289--293
 []\OT1/ptm/m/n/10 The Death-matchGame-Queue::prepare[]game func-tion is
  []
 
-<figures/ClientCommunication.png, id=16, 422.57875pt x 432.61626pt>
-File: figures/ClientCommunication.png Graphic file (type png)
-<use figures/ClientCommunication.png>
-Package pdftex.def Info: figures/ClientCommunication.png  used on input line 29
-4.
-(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+[5]
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
 
-LaTeX Warning: `h' float specifier changed to `ht'.
 
-<figures/HostCommunication.png, id=18, 422.57875pt x 432.61626pt>
-File: figures/HostCommunication.png Graphic file (type png)
-<use figures/HostCommunication.png>
-Package pdftex.def Info: figures/HostCommunication.png  used on input line 300.
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
 
-(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.425 ...is a shared\textunderscore ptr\textlangle
+                                                   T\textrangle object is st...
 
-LaTeX Warning: `h' float specifier changed to `ht'.
-
-[4]
-! You can't use `macro parameter character #' in horizontal mode.
-l.309 ...he Unity game engine and programmed in C#
-                                                  .
 ? 
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
+
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.425 ...extunderscore ptr\textlangle T\textrangle
+                                                   object is still referenci...
+
+? 
+
+! Package textcomp Error: Symbol \textlangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.426 ...ost::shared\textunderscore ptr\textlangle
+                                                   TCPConnection\textrangle ...
+
+? 
+
+! Package textcomp Error: Symbol \textrangle not provided by
+(textcomp)                font family ptm in TS1 encoding.
+(textcomp)                Default family used instead.
+
+See the textcomp package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.426 ...e ptr\textlangle TCPConnection\textrangle
+                                                   con.
+? 
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [5 <./figures/ClientCommunication.png> <./figures/HostCommunication.png>]
-! You can't use `macro parameter character #' in horizontal mode.
-l.367 ...it is programmed in C++ and this is in C#
-                                                  ?
-? 
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-LaTeX Font Info:    Try loading font information for U+msa on input line 418.
+ [6]
+LaTeX Font Info:    Try loading font information for U+msa on input line 436.
+
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 418.
+LaTeX Font Info:    Try loading font information for U+msb on input line 436.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [6]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 453.
-
-
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 )
+Underfull \hbox (badness 2351) in paragraph at lines 443--453
+\OT1/ptm/m/n/10 Server. You can find most of the code is un-der the
+ []
 
-LaTeX Warning: Command \textunderscore invalid in math mode on input line 491.
 
-[7]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 563.
-
- (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
-File: omsptm.fd 
-)
-LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 563.
+Underfull \hbox (badness 10000) in paragraph at lines 458--459
+[]\OT1/ptm/m/n/8 Time.deltaTime. (n.d.). Re-trieved from
+ []
 
 
 ** Conference Paper **
@@ -611,33 +770,32 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[8] (./Matchmaking_Server.aux)
+[7
+
+] (./Matchmaking_Server.aux)
 
 LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4415 strings out of 492982
- 64097 string characters out of 6134896
- 131941 words of memory out of 5000000
- 7903 multiletter control sequences out of 15000+600000
- 45569 words of font info for 91 fonts, out of 8000000 for 9000
+ 4330 strings out of 492982
+ 63051 string characters out of 6134896
+ 133878 words of memory out of 5000000
+ 7838 multiletter control sequences out of 15000+600000
+ 35041 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,35p,589b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
-e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
-blic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/couri
-er/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><
-/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/tex
-live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
-/fonts/type1/urw/times/utmri8a.pfb>
-Output written on Matchmaking_Server.pdf (8 pages, 160309 bytes).
+ 41i,8n,35p,295b,250s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf/fonts/enc/dvips/cm-super/cm-super-ts1.enc}{/usr/share/texli
+ve/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texlive/texmf-dist/fonts/
+type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texmf/fonts/type1/public/cm-supe
+r/sfrm1000.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb>
+</usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/te
+xlive/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dis
+t/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Matchmaking_Server.pdf (7 pages, 112095 bytes).
 PDF statistics:
- 77 PDF objects out of 1000 (max. 8388607)
- 52 compressed objects within 1 object stream
+ 59 PDF objects out of 1000 (max. 8388607)
+ 39 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -22,58 +22,60 @@ rwickman@memphis.edu}
 \maketitle
 
 \begin{abstract}
-
+This is a write up for a project done in my COMP-7212 class.
+It specifies the implmentation details, designs, and hurdles of creating a distributed multiplayer game from scratch.
 \end{abstract}
 
 \section{Introduction}
 In this section I will provide a brief overview of the project and its implementation details.
 
 \subsection{Goal}
-The goal of this project initially was to create a full peer-to-peer multiplayer video game.
-However, due to time constraints, I switched the scope of it to mainly focus on the matchmaking Server.
-Thus my goal was updated to establish a good baseline matchmaking Server that players of a Video Game could use to find and join a game session.
-Although this was my goal, I still did work on other components as time allowed, details of which I will give in the next section and throughout this paper.
+The goal of this project initially was to create a full peer-to-peer multiplayer video game, of which I got pretty close to accomplishing.
+However, due to time constraints, I switched the scope of it to mainly focus on the matchmaking server, demo video game, and client-side communication with the matchmaking server.
+Thus my goal was updated to establish a good baseline matchmaking server and communication pipeline so that players of a video game could use to find and join a game session.
+Although my goal was updated, I still designed the areas I was not able to fully implement (e.g., the peer-to-peer in game communication).
 
 \subsection{Overview}
-In this project, I worked on a few components of what make up a mutliplayer video game.
+In this project, I worked on a few major components of what makes up a mutliplayer video game.
 What this entailed was making a way for users to send information amongst one another once in the game, a matchmaking server users could use to connect to a game, and the game itself.
 I decided to use a peer-to-peer architecture for the in game communication for users. 
 While this may cause more latency than a dedicated, centralized server, it scales better and is more cost efficent for myself.
-In this, one player is chosen to host the game and act like the server.
+In this, one player is chosen to host the game and acts like the server.
 The rest of the players will communicate through the host user as if it was a dedicated server itself.
 They will use UDP to communicate as the game is a real-time application and is thus time sensitive.
 On the other hand, the matchmaking server will be centralized as there needs to be a single point for all users to connect and express interest in finding a game session to join.
 The users will use TCP, as opposed to UDP, to connect to the matchmaking server as reliable data transfer is important for finding and joining a game.
-The game was developed using the Unity game engine. 
+
+The game was developed using the Unity game engine and programed in C\# .
 It is has a main menu that users can use to find a game through the matchamking server or connect to a game directly by using an IP address of the host.
 The actual gameplay is a first-person sword fighting game.
-While I have a good working example for these components, this is far from the final product it will eventually be.
-Thus throughout this paper I will provide incite to where I beleive the application could be improved or expanded on.
+While I have a good working example for these components, this is far from the final product of what it will eventually be.
+Thus throughout this paper I will provide incite to where I beleive the application could be improved or expanded on as well.
 
 \section{Matchmaking Server}
-The majority of the time I spend on this project was focused on the matchmaking server.
+The majority of the time I spent on this project was focused on the matchmaking server.
 It ended up having a lot more moving components than I first anticipated.
-I used C++ to code everything and CMake to manage the build procces, and I used Boost.Asio to provide asynchronous networking capability.
-The server is made up of a few parts: matchmaking server interface, TCPConnection, and game queue.
+I used C++ to code everything, CMake to manage the build procces, and Boost.Asio to provide the asynchronous networking capability.
+The server is made up of a few parts main moving parts: matchmaking server interface, TCPConnection, and game queue.
+The rest of the parts are used in conjunction with these main parts of which I will explain in the following subsections.
 
 \subsection{Packet}
-In the exchanging of information between independent applications there needs to be a uniform way for the to pass and read message in support of interoperability. 
+In the exchanging of information between independent applications there needs to be a uniform way to pass and read message in support of interoperability. 
 Such a requirement requires an agreement between the communicating applications such as them both following a specific protocol.
-Due to this, I created my own packet types that the front-end video game programmed in C# can use to communicate with the backend matchmaking server programmed in C++.  
+Due to this, I created my own packet types that the front-end video game programmed in C\# can use to communicate with the back-end matchmaking server programmed in C++.
 The packets carry data that is created by one side and  consumed by the other side.
-The data in the packets are in JSON data format, which uses key-value pairs.  
+The data in the packets are in JSON data format, which uses key-value pairs.
 This has to be serialized before it is sent over the network and deserialized when it arrives to its destination.
-The reason I chose this data format is because there are libraries in both C# and C++ that support the use of this data format and it is rather ease of use of JSON.
+The reason I chose this data format is because there are libraries in both C\# and C++ that support the usage of JSON and it rather easy to use.
 
 The packets themselves were designed to be lightweight and easily extensible.
 There are a many different packet types I created throughout this project; I will give a description of all of them later on in this section.
-They all inherit from the parent class Packet and have the naming scheme of "<packet type>Packet".
+They all inherit from the parent class Packet and have the naming scheme of "\textlangle packet type\textrangle Packet".
 The Packet class has member variables for the header length, maximum body length, body length, a char array to store the data, and a packet type.
 The header length is the fixed amount of bytes contained in the header.
 The maximum body length is the upper limit for the amount of bytes that can be contained in  a packet.
 The body length is the amount of bytes contained in the body.
-The data char array is where the header and body are actually stored.
-This is also what is actually send over the network when communicating.
+The data char array is where the header and body are actually stored and what is actually sent over the network when communicating.
 The header is the first 8 character of the data array and it contains the body length.
 The reason for having a header store this information is because the body of a packet differs between packet types.
 Furthermore, it allows for variable length packets which thus provides more granularity of the data sent and reduces wasted bandwidth consumption.
@@ -82,7 +84,7 @@ This JSON data differs between packet types; however, all of them contain the ke
 
 The Packet class also has member functions to access its protected members, to decode and encode the header, to decode the body, and to encode both the header at once body.
 The functions to access the protected members include data(), body(), length(), body\textunderscore length(), and packet\textunderscore type().
-All of these are pretty much self explanitory given their names.
+All of these are self-explanitory given their names.
 The only interesting one is Packet::body() which returns data\textunderscore + header\textunderscore length.
 The reason for doing this is because of pointer arithmetic in C++, this will return a pointer to the first char in the body.
 
@@ -110,7 +112,7 @@ It contains two additional members variables for a unique identifier for the cli
 It also has additional member function for accessing the members and the implementation details for encode and decode\textunderscore body.
 The FindGamePacket::encode function is used to serialize the member variables of the class and the header so it can be sent over the network.
 First, it creates a JSON data type.
-I am using a library called nlohmann to achieve this.
+I am using a library called nlohmann to achieve this.\cite{b1}
 Second, It sets the key-value pairs for the packet type, user ID, and game type.
 Third, it serializes the JSON data and stores it in a string called find\textunderscore game\textunderscore str.
 Fourth, it calls set\textunderscore body\textunderscore length with the size of find\textunderscore game\textunderscore str as its argument.
@@ -156,39 +158,38 @@ When I update this application in the future I will potentially add this feature
 \subsection{TCPConnection}
 The bulk of my time that I spent on the matchmaking server was on the TCPConnection class.
 This is due to many factors such as redesigns, updating call sequences, callbacks, and simply just the overall complexity of this component.
-The job of this component pertains  to handling the communication with the user that allows them to connect to a game.
+The job of this component pertains  to handling the communication with the user that allows them to connect to a game session.
 This is done through a series of callback functions that create asynchronous read and write operations.
-In the previous sections I explained each member of the class in no particular order, however in this one I will explain them as I go through the process of how it works.
+In the other sections I explained each member of the class in no particular order, however in this section I will explain them as I go through the process of how it works.
 
-The first think that occurs is the TCPConnection object is instantiated when a user connects to the server.
+The first thing that occurs is the TCPConnection object is instantiated after a user connects to the server.
 The TCPConnection is created by factory method aptly named create.
 This function has two parameters for a boost::asio::io\textunderscore context reference called io\textunderscore context and a GameQueueManager reference called game\textunderscore queue\textunderscore manager.
-`I calls the private constructor for TCPConnection and returns a shared pointer to the created object. 
-The parameter  io\textunderscore context is used to create  an I/O object of type boost::asio::ip::tcp::socket called socket\textunderscore .
-The member variable socket\textunderscore  is used throughout the TCPConnection object to perform the asynchronous write and read operations.
+It calls the private constructor for TCPConnection and returns a shared pointer to the created object.
+The parameter  io\textunderscore context is used to create an I/O object of type boost::asio::ip::tcp::socket called socket\textunderscore .
+The member variable socket\textunderscore is used throughout the TCPConnection object to perform the asynchronous write and read operations.
 The other parameter, the GameQueueManager reference, is used to populate a member variable game\textunderscore queue\textunderscore manager\textunderscore .
-This is used to get the game queue of specific type, I will go into more detail on this later.
+The GameQueueManager is used to geta game queue of specific type to put the client in.
+I will go into the details of this later.
 
 After the TCPConnection object is created, its start function is called.
-The function TCPConnection::start only does one thing: call TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore header.
+The function TCPConnection::start only does one thing: calls TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore header.
 
 The function TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore header is used to read the header of the FindGamePacket that will be sent by the user.
-First, it  set the local variable self to the result of the call share\textunderscore from\textunderscore this() which returns a shared\textunderscore ptr<TCPConnection> object that shares ownership of *this.
-
-
+First, it will set the local variable self to the result of the call share\textunderscore from\textunderscore this() which returns a shared\textunderscore ptr\textlangle TCPConnection\textrangle object that shares ownership of *this.
 Second, it will start the asynchronous operation by calling boost::asio::async\textunderscore read.
-The arguments to this function include the TCP socket object, the buffer to read the data into, a callback function to be fired once the read operation completes.
-The buffer is created from the data  char array  of a member variable of type FindGamePacket called find\textunderscore game\textunderscore packet  and its header length, 8 bytes.
+The arguments to this function include the TCP socket object, the buffer to read the data into, anda callback function to be fired once the read operation completes.
+The buffer is created from the data char array of a member variable of type FindGamePacket called find\textunderscore game\textunderscore packet and its header length, 8 bytes.
 The callback function is a lambda function that captures this and the self variable created earlier and takes in parameters that are populated by Boost.Asio when the read operation completes.
 These parameters are boost::system::error\textunderscore code ec and std::size\textunderscore t length.
-The ec variable indicated whether an error occurred and the length is how much data was read, in this case should be 8 bytes unless an error occurs.
+The ec variable indicated whether an error occurred and the length is how much data was read, in this case it should be 8 bytes unless an error occurs.
 Now after this operation is requested, the TCP connection stays alive until this operation is complete.
 The reason for this being that shared pointer to *this is passed to the callback function of the asynchronous read.
 The TCPConnection object cannot be destroyed until the last shared pointer reference is destroyed.
 When the header of the FindGamePacket header is read, the callback is fired.
-The callback first checks has not occurred and if it can successfully decode the FindGamePacket header.
+The callback first checks if an error has not occurred and if it can successfully decode the FindGamePacket header.
 If both of these are true, then TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body is called.
-If not, then the TCP socket  is closed.
+If not, then the TCP socket is closed.
 
 The function TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body reads the body of the FindGamePacket from the client.
 It is similar to what occurs in TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body so I will skip some of the details.
@@ -196,9 +197,30 @@ Once the body is read the callback function for this asynchronous read operation
 First, it decodes the body of the packet.
 Second, it uses the game\textunderscore queue\textunderscore manager\textunderscore  member variable to get the game queue for the game type specified in the FindGamePacket object.
 Third, if both the previous steps are successful, it will create a User object using the user ID from the FindGamePacket instance, the IP address from the socket, TCPConnection::host\textunderscore game, and TCPConnection::join\textunderscore game. 
-Fourth, it will push this created the created User instance on the queue.
+Fourth, it will push this created User instance on the queue.
 Fifth, it will call TCPConnection::do\textunderscore read\textunderscore ack\textunderscore header.
 
+Once the queue is ready to start the game, there at two main code paths the TCPConnection will envoke: either it will be host that will create a game session or act as a client and join the game craeted by a different user.
+Both of these can be seen in Figure 1 and Figure 2.
+
+If it is the host, it will send the HostPacket to the client.
+The client will first send back a AckPacket and then a JoinPacket.
+This JoinPacket will be sent to all others User who will join the game.
+The distribution of the JoinPacket is handled by the GameQueue when TCPConnection calls the start callback on the User.
+
+If it is not the host, the TCPConnection will just send the JoinPacket to the client and close the connection.
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/ClientCommunication.png}}
+\caption{An example of communication that will occur when a user will act as a client in the game session }
+\label{fig}
+\end{figure}
+
+\begin{figure}[h]
+\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/HostCommunication.png}}
+\caption{An example of communication that will occur when a user will act as a client in the game session. }
+\label{fig}
+\end{figure}
 
 \subsection{Game Queue}
 Before a user is able to join a game session, they need to wait their turn so that everyone who came in before them has the chance to join a game. 
@@ -207,7 +229,7 @@ However, in a video game with multiple game types, a user may only want to join 
 Thus, it would not make sense for users looking for different game types to be in the same queue.
 My solution to these requirements is to have a GameQueue superclass that is inherited from by all queues handling the users of a specific game type. \par
 This class has members variables for the queue that stores weak pointers to Users, an unordered user map, the game type of this queue, the minimum and maximum size of a game session, the current queue size, and a boolean flag for if a game is currently getting prepared.
-The queue is a std::queue that simply stores std::weak\textunderscore ptr<User> types. The reason it stores this type and not a User directly is because a connection may get dropped while a user is in queue.
+The queue is a std::queue that simply stores std::weak\textunderscore ptr\textlangle User\textrangle types. The reason it stores this type and not a User directly is because a connection may get dropped while a user is in queue.
 If this occurs, then the queue will be able to correctly verify this by checking if the User object the pointer points to is expired before it uses it.
 The user map is used to keep track of the amount of times a user has been added to a queue.
 This, however, is not to prevent duplicate entries in the queue, but to make sure the user’s place in the queue is updated.
@@ -236,10 +258,10 @@ They are all pure virtual function as it is up to the inheriting class to define
 This of course makes the GameQueue class abstract, and thus I only have the GameQueue header and not associated cpp implementation file.
 Currently, due to time constraints,  I only have one game type called deathmatch.
 Its class is aptly named DeathmatchGameQueue.
-All future GameQueue children will follow this naming convention of "<game type>GameQueue".
-This class has same the members as the GameQueue superclass, albeit, with its own unique implementation of member functions of which I will explain in depth.
+All future GameQueue children will follow this naming convention of "\textlangle game type\textrangle GameQueue".
+This class has same members as the GameQueue superclass, albeit, with its own unique implementation of member functions of which I will explain in depth.
 
-The DeathmatchGameQueue::push function has a single parameter of type std::shared\textunderscore ptr<User>& aptly named user.
+The DeathmatchGameQueue::push function has a single parameter of type std::shared\textunderscore ptr\textlangle User\textrangle \& aptly named user.
 This is what is being requested to be added to the queue.
 First, it will see if the user has already been added to the queue by checking if the user ID is in the user map.
 If it is not, it is inserted in the user map with a count of 1 and increment the queue size.
@@ -253,7 +275,7 @@ This is due to the unforeseen complexity of having duplicates in the queue and t
 When the pop function is called, it will first check if the current queue size is less than or equal to 0.
 If it is, it will return a default weak\textunderscore ptr that points at nothing, so pretty much just null.
 Then, if queue size is greater than 0, it will keep trying to get a user off the queue until it find a user that still has an active connection.
-If no such user is found it will return weak\textunderscore ptr<User>().
+If no such user is found it will return weak\textunderscore ptr\textlangle User\textrangle ().
 Now, once a user is found, it will check if the user is duplicated in the queue.
 If it is, it will pop out users out of the queue until it finds one that is not duplicated.
 When duplicates are removed in this way, their count is decremented.
@@ -290,23 +312,11 @@ In the future, this may prove helpful if I require different users to behave dif
 One such instance would be if a private game is being created where only select users are able to join.
 This join callback could provide additional authentication statements to verify a user can join a game before making a failed attempt and the TCPConnection closing thinking the user found a game.
 
-\begin{figure}[h]
-\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/ClientCommunication.png}}
-\caption{An example of communication that will occur when a user will act as a client in the game session }
-\label{fig}
-\end{figure}
-
-\begin{figure}[h]
-\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/HostCommunication.png}}
-\caption{An example of communication that will occur when a user will act as a client in the game session. }
-\label{fig}
-\end{figure}
-
 \section{The Video Game}
 In this section I will give an the implementation details of the video game itself, the client-side mathcmaking, and how I will implement the in game peer-to-peer communication in the future.
 \subsection{Gameplay}
 The video game that the matchmaking system will support is a simple 3D first-person sword fighting game.
-It was created using the Unity game engine and programmed in C#.
+It was created using the Unity game engine and programmed in C\#.
 Note in the previous sections I used  client and user interchangeably, as those are both common terms to describe the person asking for a service or interacting with a service in the networking field.
 In the video game development field it more appropriate to describe this person as a player.
 There are a few different inputs a player can do to interact with the environment and other players.
@@ -318,7 +328,7 @@ The Rigidbody component  is something built into Unity that allows for adding ph
 In my game, force it applies is based on the input and speed of the character.
 The direction the player wants to move is given by the arrows keys.
 This is restricted to be in the x and z axis, as the y axis corresponds to the character floating up or down.
-This direction vector is then normalized to be a unit vector and multiplied by the character’s speed and Time.delataTime (e.g., direction * speed * Time.deltaTime).
+This direction vector is then normalized to be a unit vector and multiplied by the character’s speed and Time.delataTime (e.g., direction * speed * Time.deltaTime). \cite{b2}
 The speed is a scalar value, not a vector, to denote the magnitude the player should move in a particular direction.
 Time.deletaTime is the completion time in seconds since the last frame.
 It is used to keep the movement of the character frame independent and instead time dependent.
@@ -357,14 +367,14 @@ Thus, multiplayer capability needs to be added to introduce the distributed syst
 In previous sections I described how the Matchmaking server looks from the server-side, I will now explain the client-side.
 Similarly to the server-side, the client-side performs a series of asynchronous calls to get the user into a game session.
 
-I created a basic Main Menu in Unity with  the capability to find a game by simply clicking the find game button.
+I created a basic main menu in Unity with the capability to find a game by simply clicking the find game button.
 That is all the player sees so distribution transparency is present in this regard.
 After the button is clicked a TCP socket and an asynchronous connect is started.
 Currently, the IP address is fixed for the server, but in the future it will use a hostname and then resolve it to a IP address as to provide replication and relocation transparency.
 Once the client is connected, the connect callback is called.
 The connect callback calls another method called SendFindGame.
 The SendFindGame method creates a FindGamePacket and sends it through the newly established connection.
-So, how am I sending a FindGamePacket when it is programmed in C++ and this is in C#?
+So, how am I sending a FindGamePacket when it is programmed in C++ and this is in C\#?
 Simple, just creating a JSON object that has the same key-value pairs and serializing it.
 Once FindGamePackt is successfully sent, the callback handler of this send is fired and calls ReceiveHostOrJoin.
 The method ReceiveHostOrJoin asynchronously reads the next packet.
@@ -408,201 +418,45 @@ This could also be proximity based (i.e., only other character within a certain 
 
 Nonetheless, I will need to do a lot of research in to find the best solution for the in game communication.
 
-\section{Prepare Your Paper Before Styling}
-Before you begin to format your paper, first write and save the content as a 
-separate text file. Complete all content and organizational editing before 
-formatting. Please note sections \ref{AA}--\ref{SCM} below for more information on 
-proofreading, spelling and grammar.
+\section{Conclusion}
+\subsection{Redesign}
+At first I had trouble keeping the socket alive.
+There were no outstanding read or write operations so it would automatically cancel close the socket without finishing the sequence of actions to get a user to join a game. 
+My first solution to this problem resulted from looking through the boost asio documentation and discovering that a socket stays open as long as there is a shared\textunderscore ptr\textlangle T\textrangle object is still referencing the object.
+So, I created a connection lock object called ConnectionLock that had a member varaible boost::shared\textunderscore ptr\textlangle TCPConnection\textrangle con.
+The problem with this solution, however, is that the ConnectionLock instance must explicitly dereference the TCPConnection by setting con = nullptr.
+This led to problems of making sure every code path that could throw an error or is done communicating must release this lock.
+If not, the socket associated with the TCPConnection would never get closed resulting in a memory leak. 
+Due to this being prone to error, I redesigned how to keep the socket alive through using the AckPacket.
 
-Keep your text and graphic files separate until after the text has been 
-formatted and styled. Do not number text heads---{\LaTeX} will do that 
-for you.
-
-\subsection{Abbreviations and Acronyms}\label{AA}
-Define abbreviations and acronyms the first time they are used in the text, 
-even after they have been defined in the abstract. Abbreviations such as 
-IEEE, SI, MKS, CGS, ac, dc, and rms do not have to be defined. Do not use 
-abbreviations in the title or heads unless they are unavoidable.
-
-\subsection{Units}
+\subsection{Future Work}
+I plan to continue working on this project in the future.
+I will expand open the current system and had ton more features.
 \begin{itemize}
-\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as ``3.5-inch disk drive''.
-\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-\item Do not mix complete spellings and abbreviations of units: ``Wb/m\textsuperscript{2}'' or ``webers per square meter'', not ``webers/m\textsuperscript{2}''. Spell out units when they appear in text: ``. . . a few henries'', not ``. . . a few H''.
-\item Use a zero before decimal points: ``0.25'', not ``.25''. Use ``cm\textsuperscript{3}'', not ``cc''.)
+	\item Give the game queue the ability to start multiple games at a time
+	\item Introduce multithreading to the matchmaking server
+	\item Enforce timeouts for read and writes
+	\item Finish implementing peer-to-peer in game UDP communications
 \end{itemize}
 
-\subsection{Equations}
-Number equations consecutively. To make your 
-equations more compact, you may use the solidus (~/~), the exp function, or 
-appropriate exponents. Italicize Roman symbols for quantities and variables, 
-but not Greek symbols. Use a long dash rather than a hyphen for a minus 
-sign. Punctuate equations with commas or periods when they are part of a 
-sentence, as in:
-\begin{equation}
-a+b=\gamma\label{eq}
-\end{equation}
+\subsection{Final Thought}
+Throughout this project I was able to gain a lot of experience in understanding the foundations on how distributed systems work.
+I was able to implement communications that utilize interoperability through the packets.
+I gained more experience in asynchronous communication with the server-side matchmaking and the client-side game.
+I was also introduced with many challenges I did not initially think would spark up such as  keeping the TCP connection alive while waiting on the queue to fire a callback.
+The repository for the matchmaking server can be found at https://github.com/rwickman/Matchmaking-Server.
+You can find most of the code is under the server/ directory.
+Also, the demo game can be found at https://github.com/rwickman/Distributed-Systems-Project.
+The code is under Assets/Scripts/.
+The reason I separated the repositories is because I plan on making matchmaking server extensible to other games besides just the one I created for this project.
+Nonetheless, feel free to ask me an questions about any think at all.
 
-Be sure that the 
-symbols in your equation have been defined before or immediately following 
-the equation. Use ``\eqref{eq}'', not ``Eq.~\eqref{eq}'' or ``equation \eqref{eq}'', except at 
-the beginning of a sentence: ``Equation \eqref{eq} is . . .''
 
-\subsection{\LaTeX-Specific Advice}
-
-Please use ``soft'' (e.g., \verb|\eqref{Eq}|) cross references instead
-of ``hard'' references (e.g., \verb|(1)|). That will make it possible
-to combine sections, add equations, or change the order of figures or
-citations without having to go through the file line by line.
-
-Please don't use the \verb|{eqnarray}| equation environment. Use
-\verb|{align}| or \verb|{IEEEeqnarray}| instead. The \verb|{eqnarray}|
-environment leaves unsightly spaces around relation symbols.
-
-Please note that the \verb|{subequations}| environment in {\LaTeX}
-will increment the main equation counter even when there are no
-equation numbers displayed. If you forget that, you might write an
-article in which the equation numbers skip from (17) to (20), causing
-the copy editors to wonder if you've discovered a new method of
-counting.
-
-{\BibTeX} does not work by magic. It doesn't get the bibliographic
-data from thin air but from .bib files. If you use {\BibTeX} to produce a
-bibliography you must send the .bib files. 
-
-{\LaTeX} can't read your mind. If you assign the same label to a
-subsubsection and a table, you might find that Table I has been cross
-referenced as Table IV-B3. 
-
-{\LaTeX} does not have precognitive abilities. If you put a
-\verb|\label| command before the command that updates the counter it's
-supposed to be using, the label will pick up the last counter to be
-cross referenced instead. In particular, a \verb|\label| command
-should not go before the caption of a figure or a table.
-
-Do not use \verb|\nonumber| inside the \verb|{array}| environment. It
-will not stop equation numbers inside \verb|{array}| (there won't be
-any anyway) and it might stop a wanted equation number in the
-surrounding equation.
-
-\subsection{Some Common Mistakes}\label{SCM}
-\begin{itemize}
-\item The word ``data'' is plural, not singular.
-\item The subscript for the permeability of vacuum $\mu\textunderscore {0}$, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ``o''.
-\item In American English, commas, semicolons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-\item A graph within a graph is an ``inset'', not an ``insert''. The word alternatively is preferred to the word ``alternately'' (unless you really mean something that alternates).
-\item Do not use the word ``essentially'' to mean ``approximately'' or ``effectively''.
-\item In your paper title, if the words ``that uses'' can accurately replace the word ``using'', capitalize the ``u''; if not, keep using lower-cased.
-\item Be aware of the different meanings of the homophones ``affect'' and ``effect'', ``complement'' and ``compliment'', ``discreet'' and ``discrete'', ``principal'' and ``principle''.
-\item Do not confuse ``imply'' and ``infer''.
-\item The prefix ``non'' is not a word; it should be joined to the word it modifies, usually without a hyphen.
-\item There is no period after the ``et'' in the Latin abbreviation ``et al.''.
-\item The abbreviation ``i.e.'' means ``that is'', and the abbreviation ``e.g.'' means ``for example''.
-\end{itemize}
-An excellent style manual for science writers is \cite{b7}.
-
-\subsection{Authors and Affiliations}
-\textbf{The class file is designed for, but not limited to, six authors.} A 
-minimum of one author is required for all conference articles. Author names 
-should be listed starting from left to right and then moving down to the 
-next line. This is the author sequence that will be used in future citations 
-and by indexing services. Names should not be listed in columns nor group by 
-affiliation. Please keep your affiliations as succinct as possible (for 
-example, do not differentiate among departments of the same organization).
-
-\subsection{Identify the Headings}
-Headings, or heads, are organizational devices that guide the reader through 
-your paper. There are two types: component heads and text heads.
-
-Component heads identify the different components of your paper and are not 
-topically subordinate to each other. Examples include Acknowledgments and 
-References and, for these, the correct style to use is ``Heading 5''. Use 
-``figure caption'' for your Figure captions, and ``table head'' for your 
-table title. Run-in heads, such as ``Abstract'', will require you to apply a 
-style (in this case, italic) in addition to the style provided by the drop 
-down menu to differentiate the head from the text.
-
-Text heads organize the topics on a relational, hierarchical basis. For 
-example, the paper title is the primary text head because all subsequent 
-material relates and elaborates on this one topic. If there are two or more 
-sub-topics, the next level head (uppercase Roman numerals) should be used 
-and, conversely, if there are not at least two sub-topics, then no subheads 
-should be introduced.
-
-\subsection{Figures and Tables}
-\paragraph{Positioning Figures and Tables} Place figures and tables at the top and 
-bottom of columns. Avoid placing them in the middle of columns. Large 
-figures and tables may span across both columns. Figure captions should be 
-below the figures; table heads should appear above the tables. Insert 
-figures and tables after they are cited in the text. Use the abbreviation 
-``Fig.~\ref{fig}'', even at the beginning of a sentence.
-
-\begin{table}[htbp]
-\caption{Table Type Styles}
-\begin{center}
-\begin{tabular}{|c|c|c|c|}
-\hline
-\textbf{Table}&\multicolumn{3}{|c|}{\textbf{Table Column Head}} \\
-\cline{2-4} 
-\textbf{Head} & \textbf{\textit{Table column subhead}}& \textbf{\textit{Subhead}}& \textbf{\textit{Subhead}} \\
-\hline
-copy& More table copy$^{\mathrm{a}}$& &  \\
-\hline
-\multicolumn{4}{l}{$^{\mathrm{a}}$Sample of a Table footnote.}
-\end{tabular}
-\label{tab1}
-\end{center}
-\end{table}
-
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
-rather than symbols or abbreviations when writing Figure axis labels to 
-avoid confusing the reader. As an example, write the quantity 
-``Magnetization'', or ``Magnetization, M'', not just ``M''. If including 
-units in the label, present them within parentheses. Do not label axes only 
-with units. In the example, write ``Magnetization (A/m)'' or ``Magnetization 
-\{A[m(1)]\}'', not just ``A/m''. Do not label axes with a ratio of 
-quantities and units. For example, write ``Temperature (K)'', not 
-``Temperature/K''.
-
-\section*{Acknowledgment}
-
-The preferred spelling of the word ``acknowledgment'' in America is without 
-an ``e'' after the ``g''. Avoid the stilted expression ``one of us (R. B. 
-G.) thanks $\ldots$''. Instead, try ``R. B. G. thanks$\ldots$''. Put sponsor 
-acknowledgments in the unnumbered footnote on the first page.
-
-\section*{References}
-
-Please number citations consecutively within brackets \cite{b1}. The 
-sentence punctuation follows the bracket \cite{b2}. Refer simply to the reference 
-number, as in \cite{b3}---do not use ``Ref. \cite{b3}'' or ``reference \cite{b3}'' except at 
-the beginning of a sentence: ``Reference \cite{b3} was the first $\ldots$''
-
-Number footnotes separately in superscripts. Place the actual footnote at 
-the bottom of the column in which it was cited. Do not put footnotes in the 
-abstract or reference list. Use letters for table footnotes.
-
-Unless there are six authors or more give all authors' names; do not use 
-``et al.''. Papers that have not been published, even if they have been 
-submitted for publication, should be cited as ``unpublished'' \cite{b4}. Papers 
-that have been accepted for publication should be cited as ``in press'' \cite{b5}. 
-Capitalize only the first word in a paper title, except for proper nouns and 
-element symbols.
-
-For papers published in translation journals, please give the English 
-citation first, followed by the original foreign-language citation \cite{b6}.
 
 \begin{thebibliography}{00}
-\bibitem{b1} G. Eason, B. Noble, and I. N. Sneddon, ``On certain integrals of Lipschitz-Hankel type involving products of Bessel functions,'' Phil. Trans. Roy. Soc. London, vol. A247, pp. 529--551, April 1955.
-\bibitem{b2} J. Clerk Maxwell, A Treatise on Electricity and Magnetism, 3rd ed., vol. 2. Oxford: Clarendon, 1892, pp.68--73.
-\bibitem{b3} I. S. Jacobs and C. P. Bean, ``Fine particles, thin films and exchange anisotropy,'' in Magnetism, vol. III, G. T. Rado and H. Suhl, Eds. New York: Academic, 1963, pp. 271--350.
-\bibitem{b4} K. Elissa, ``Title of paper if known,'' unpublished.
-\bibitem{b5} R. Nicole, ``Title of paper with only first word capitalized,'' J. Name Stand. Abbrev., in press.
-\bibitem{b6} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ``Electron spectroscopy studies on magneto-optical media and plastic substrate interface,'' IEEE Transl. J. Magn. Japan, vol. 2, pp. 740--741, August 1987 [Digests 9th Annual Conf. Magnetics Japan, p. 301, 1982].
-\bibitem{b7} M. Young, The Technical Writer's Handbook. Mill Valley, CA: University Science, 1989.
+\bibitem{b1} Nlohmann Json. (n.d.). Retrieved from https://github.com/nlohmann/json
+\bibitem{b2} Time.deltaTime. (n.d.). Retrieved from https://docs.unity3d.com/ScriptReference/Time-deltaTime.html 
 \end{thebibliography}
 \vspace{12pt}
-\color{red}
-IEEE conference templates contain guidance text for composing and formatting conference papers. Please ensure that all template text is removed from your conference paper prior to submission to the conference. Failure to remove the template text from your paper may result in your paper not being published.
 
 \end{document}
