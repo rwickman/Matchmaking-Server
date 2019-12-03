@@ -56,31 +56,6 @@ It ended up having a lot more moving components than I first anticipated.
 I used C++ to code everything and CMake to manage the build procces, and I used Boost.Asio to provide asynchronous networking capability.
 The server is made up of a few parts: matchmaking server interface, TCPConnection, and game queue.
 
-\subsection{Mathmaking Server Interface}
-This is the point in which the user will first connect to the server.
-The server is listening on a specified port and accepts incoming requests when the arrive. 
-It asynchronously accepts the requests then initiates a callback that handles setting up the TCP socket to the client.
-This allows for multiple users to connect to the server at once. 
-The socket is constructed by initializing a TCPConnection object that will handle the rest of the users communication to find a game.
-While I did consider creating a new thread for each connection, I did not due to time constraints and not wanting to deal with the complexity of adding multithreading such as locking resources, race conditions, ect..
-When I update this application in the future I will potentially add this feature.
-
-\subsection{TCPConnection}
-The bulk of my time that I spent on the matchmaking server was on the TCPConnection class.
-This is due to many factors such as redesigns, updating call sequences, callbacks, and simply just the overall complexity of this component.
-The job of this component pretains to handling the communication with the client that allows them to connect to a game.
-Now, after talking about the data format it uses for interoperability, I will begin explaining the actua job of the TCPConnection class.
-After the client has established a TCP connection with the Matchmaking server, a TCPConnection object is instantiated.
-Then the first thing the client will do is send a FindGamePacket.
-Once the server begins to recieve the data for the FindGamePacket in an asynchronous read operation, it will first only read 8 bytes for the header.
-Then, if this is successful, it will decode the header and read the amount of bytes specified for the body.
-This is done by calling a function from the callback function that reads the header of the packet.
-This function called "TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscorebody" will initiate another asychronous read operation to read the body.
-Then once it is done reading the body, it will fire a callback that will add the user to a queue for the specified game type.
-The way the user is pushed on the queue is by first getting a shared pointer to the queue from a queue manager.
-Next, it will create a User object.
-Finally, the User object is pushed on the queue.
-
 \subsection{Packet}
 In the exchanging of information between independent applications there needs to be a uniform way for the to pass and read message in support of interoperability. 
 Such a requirement requires an agreement between the communicating applications such as them both following a specific protocol.
@@ -168,6 +143,63 @@ This is used when the value of ack type is set to Error.
 Nonetheless that finishes the discussion on the different packet types and their individual usage.
 I will go into more detail later on how each one is used in the matchmaking server setting.
 
+
+\subsection{Mathmaking Server Interface}
+This is the point in which the user will first connect to the server.
+The server is listening on a specified port and accepts incoming requests when the arrive. 
+It asynchronously accepts the requests then initiates a callback that handles setting up the TCP socket to the client.
+This allows for multiple users to connect to the server at once. 
+The socket is constructed by initializing a TCPConnection object that will handle the rest of the users communication to find a game.
+While I did consider creating a new thread for each connection, I did not due to time constraints and not wanting to deal with the complexity of adding multithreading such as locking resources, race conditions, ect..
+When I update this application in the future I will potentially add this feature.
+
+\subsection{TCPConnection}
+The bulk of my time that I spent on the matchmaking server was on the TCPConnection class.
+This is due to many factors such as redesigns, updating call sequences, callbacks, and simply just the overall complexity of this component.
+The job of this component pertains  to handling the communication with the user that allows them to connect to a game.
+This is done through a series of callback functions that create asynchronous read and write operations.
+In the previous sections I explained each member of the class in no particular order, however in this one I will explain them as I go through the process of how it works.
+
+The first think that occurs is the TCPConnection object is instantiated when a user connects to the server.
+The TCPConnection is created by factory method aptly named create.
+This function has two parameters for a boost::asio::io\textunderscore context reference called io\textunderscore context and a GameQueueManager reference called game\textunderscore queue\textunderscore manager.
+`I calls the private constructor for TCPConnection and returns a shared pointer to the created object. 
+The parameter  io\textunderscore context is used to create  an I/O object of type boost::asio::ip::tcp::socket called socket\textunderscore .
+The member variable socket\textunderscore  is used throughout the TCPConnection object to perform the asynchronous write and read operations.
+The other parameter, the GameQueueManager reference, is used to populate a member variable game\textunderscore queue\textunderscore manager\textunderscore .
+This is used to get the game queue of specific type, I will go into more detail on this later.
+
+After the TCPConnection object is created, its start function is called.
+The function TCPConnection::start only does one thing: call TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore header.
+
+The function TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore header is used to read the header of the FindGamePacket that will be sent by the user.
+First, it  set the local variable self to the result of the call share\textunderscore from\textunderscore this() which returns a shared\textunderscore ptr<TCPConnection> object that shares ownership of *this.
+
+
+Second, it will start the asynchronous operation by calling boost::asio::async\textunderscore read.
+The arguments to this function include the TCP socket object, the buffer to read the data into, a callback function to be fired once the read operation completes.
+The buffer is created from the data  char array  of a member variable of type FindGamePacket called find\textunderscore game\textunderscore packet  and its header length, 8 bytes.
+The callback function is a lambda function that captures this and the self variable created earlier and takes in parameters that are populated by Boost.Asio when the read operation completes.
+These parameters are boost::system::error\textunderscore code ec and std::size\textunderscore t length.
+The ec variable indicated whether an error occurred and the length is how much data was read, in this case should be 8 bytes unless an error occurs.
+Now after this operation is requested, the TCP connection stays alive until this operation is complete.
+The reason for this being that shared pointer to *this is passed to the callback function of the asynchronous read.
+The TCPConnection object cannot be destroyed until the last shared pointer reference is destroyed.
+When the header of the FindGamePacket header is read, the callback is fired.
+The callback first checks has not occurred and if it can successfully decode the FindGamePacket header.
+If both of these are true, then TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body is called.
+If not, then the TCP socket  is closed.
+
+The function TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body reads the body of the FindGamePacket from the client.
+It is similar to what occurs in TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscore body so I will skip some of the details.
+Once the body is read the callback function for this asynchronous read operation commences.
+First, it decodes the body of the packet.
+Second, it uses the game\textunderscore queue\textunderscore manager\textunderscore  member variable to get the game queue for the game type specified in the FindGamePacket object.
+Third, if both the previous steps are successful, it will create a User object using the user ID from the FindGamePacket instance, the IP address from the socket, TCPConnection::host\textunderscore game, and TCPConnection::join\textunderscore game. 
+Fourth, it will push this created the created User instance on the queue.
+Fifth, it will call TCPConnection::do\textunderscore read\textunderscore ack\textunderscore header.
+
+
 \subsection{Game Queue}
 Before a user is able to join a game session, they need to wait their turn so that everyone who came in before them has the chance to join a game. 
 This is why I went with a FIFO data structure such as a queue to implement this feature. 
@@ -197,14 +229,16 @@ This of course could also be fixed by locking the queue, but would take less tim
 The current queue size is used to keep track of the amount of unique users in the queue.
 This will always be less than or equal to the actual queue size as there could be duplicate users in the queue.
 The game type of the game queue is represented as an enum value.
-I have a file, game\textunderscore type.hpp, specifying all the possible game types as an enum. \par
+I have a file, game\textunderscore type.hpp, specifying all the possible game types as an enum.
+
 There are also several member functions in the GameQueue class: push, pop, erase, prepare\textunderscore game, and start\textunderscore game.
 They are all pure virtual function as it is up to the inheriting class to define their behavior.
 This of course makes the GameQueue class abstract, and thus I only have the GameQueue header and not associated cpp implementation file.
 Currently, due to time constraints,  I only have one game type called deathmatch.
 Its class is aptly named DeathmatchGameQueue.
 All future GameQueue children will follow this naming convention of "<game type>GameQueue".
-This class has same the members as the GameQueue superclass, albeit, with its own unique implementation of member functions of which I will explain in depth. \par
+This class has same the members as the GameQueue superclass, albeit, with its own unique implementation of member functions of which I will explain in depth.
+
 The DeathmatchGameQueue::push function has a single parameter of type std::shared\textunderscore ptr<User>& aptly named user.
 This is what is being requested to be added to the queue.
 First, it will see if the user has already been added to the queue by checking if the user ID is in the user map.
@@ -212,7 +246,8 @@ If it is not, it is inserted in the user map with a count of 1 and increment the
 If it is in the queue, but its count is less than 0 meaning its been erased from the queue but not yet popped off, then it will set its count to 1 and increment the queue size.
 If it is already in the queue and its count is greater than 1 then it will only increment its count. 
 After checking its count, the user is added to the queue.
-Finally, if with this added users queue size made it large enough to start a game and a game is already not getting prepared it will call DeathmatchGameQueue::prepare\textunderscore game. \par
+Finally, if with this added users queue size made it large enough to start a game and a game is already not getting prepared it will call DeathmatchGameQueue::prepare\textunderscore game.
+
 The DeathmatchGameQueue::pop function is a little more complicated than I initially hoped.
 This is due to the unforeseen complexity of having duplicates in the queue and the potential of having a user whose connection is closed in the queue.
 When the pop function is called, it will first check if the current queue size is less than or equal to 0.
@@ -222,21 +257,25 @@ If no such user is found it will return weak\textunderscore ptr<User>().
 Now, once a user is found, it will check if the user is duplicated in the queue.
 If it is, it will pop out users out of the queue until it finds one that is not duplicated.
 When duplicates are removed in this way, their count is decremented.
-Finally, once a nonduplicated, alive user is found it will erase it from the user map, decrement the queue size, and return a weak pointer to the user. \par
+Finally, once a nonduplicated, alive user is found it will erase it from the user map, decrement the queue size, and return a weak pointer to the user.
+
 The DeathmatchGameQueue::erase function is rather simple.
 It first checks if the user is in the user map.
 If it is, then it is removed from the user map and the queue size is decremented.
-This operation is again O(1) on average rather than O(n) and thus the erase function becomes O(1) on average. \par
+This operation is again O(1) on average rather than O(n) and thus the erase function becomes O(1) on average.
+
 The DeathmatchGameQueue::prepare\textunderscore game function is what I said earlier is called once the queue reaches a certain minimum size.
 Firstly, it will set a boolean flag to true to indicate a game is getting prepared.
 Secondly, the user in the front is popped off the queue.
-Thirdly, it will call the host\textunderscore callback function on the user passing in a reference to DeathmatchGameQueue::start\textunderscore queue function and the game type of this queue. \par
+Thirdly, it will call the host\textunderscore callback function on the user passing in a reference to DeathmatchGameQueue::start\textunderscore queue function and the game type of this queue.
+
 The DeathmatchGameQueue::star\textunderscore game function is used as a callback that is fired by the TCPConnection object of a host of a game once it is ready for users to join the game it is hosting.
 It has a single parameter for a JoinPacket.
 First, the packet is encoded, which serializes the packet to get ready to be sent over the wire to the user.
 Then, the it will enter in a while loop that will continue as long as a maximum amount of users have been added or the queue is empty.
 Next, inside this loop a user is popped of this queue, the current game size is incremented, and the join\textunderscore callback on the user is called with the JoinPacket object passed as an argument.
-Finally, the preparing game flag is set to false. \par
+Finally, the preparing game flag is set to false.
+
 Now that wraps up the implementation and design of the game queue.
 
 \subsection{User}
@@ -251,7 +290,17 @@ In the future, this may prove helpful if I require different users to behave dif
 One such instance would be if a private game is being created where only select users are able to join.
 This join callback could provide additional authentication statements to verify a user can join a game before making a failed attempt and the TCPConnection closing thinking the user found a game.
 
+\begin{figure}[h]
+\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/ClientCommunication.png}}
+\caption{An example of communication that will occur when a user will act as a client in the game session }
+\label{fig}
+\end{figure}
 
+\begin{figure}[h]
+\centerline{\includegraphics[width=\linewidth, height=6cm]{figures/HostCommunication.png}}
+\caption{An example of communication that will occur when a user will act as a client in the game session. }
+\label{fig}
+\end{figure}
 
 
 \section{Prepare Your Paper Before Styling}
@@ -334,7 +383,7 @@ surrounding equation.
 \subsection{Some Common Mistakes}\label{SCM}
 \begin{itemize}
 \item The word ``data'' is plural, not singular.
-\item The subscript for the permeability of vacuum $\mu_{0}$, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ``o''.
+\item The subscript for the permeability of vacuum $\mu\textunderscore {0}$, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ``o''.
 \item In American English, commas, semicolons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
 \item A graph within a graph is an ``inset'', not an ``insert''. The word alternatively is preferred to the word ``alternately'' (unless you really mean something that alternates).
 \item Do not use the word ``essentially'' to mean ``approximately'' or ``effectively''.
@@ -399,12 +448,6 @@ copy& More table copy$^{\mathrm{a}}$& &  \\
 \label{tab1}
 \end{center}
 \end{table}
-
-\begin{figure}[htbp]
-\centerline{\includegraphics{fig1.png}}
-\caption{Example of a figure caption.}
-\label{fig}
-\end{figure}
 
 Figure Labels: Use 8 point Times New Roman for Figure labels. Use words 
 rather than symbols or abbreviations when writing Figure axis labels to 

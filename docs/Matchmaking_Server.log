@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  3 DEC 2019 06:32
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  3 DEC 2019 09:50
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -398,7 +398,11 @@ Package xcolor Info: Model `HSB' substituted by `hsb' on input line 1369.
 Package xcolor Info: Model `Gray' substituted by `gray' on input line 1370.
 Package xcolor Info: Model `wave' substituted by `hsb' on input line 1371.
 )
-(./Matchmaking_Server.aux)
+(./Matchmaking_Server.aux
+
+LaTeX Warning: Label `fig' multiply defined.
+
+)
 \openout1 = `Matchmaking_Server.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 12.
@@ -415,8 +419,7 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 12.
 LaTeX Font Info:    ... okay on input line 12.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 12.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 12.
-
-(/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
+ (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2014/09/29 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 12.
@@ -486,71 +489,119 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-! Undefined control sequence.
-l.78 ...ind\textunderscore game\textunderscorebody
-                                                  " will initiate another as...
+! You can't use `macro parameter character #' in horizontal mode.
+l.62 ... the front-end video game programmed in C#
+                                                   can use to communicate wi...
+
+? 
+! You can't use `macro parameter character #' in horizontal mode.
+l.66 ... is because there are libraries in both C#
+                                                   and C++ that support the ...
 
 ? 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
-]
-! You can't use `macro parameter character #' in horizontal mode.
-l.87 ... the front-end video game programmed in C#
-                                                   can use to communicate wi...
+] [2]
+Underfull \hbox (badness 5970) in paragraph at lines 193--201
+[]\OT1/ptm/m/n/10 The func-tion TCP-Con-nec-tion::do[]read[]find[]game[]body
+ []
 
-? 
-! You can't use `macro parameter character #' in horizontal mode.
-l.91 ... is because there are libraries in both C#
-                                                   and C++ that support the ...
 
-? 
-[2]
+Underfull \hbox (badness 10000) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 reads the body of the Find-GamePacket from the
+ []
+
+
+Underfull \hbox (badness 5403) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 client. It is sim-i-lar to what oc-curs in TCP-Con-nec-
+ []
+
+
+Underfull \hbox (badness 4328) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 tion::do[]read[]find[]game[]body so I will skip some of
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 for this asyn-chronous read op-er-a-tion com-mences.
+ []
+
+
+Underfull \hbox (badness 3250) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 First, it de-codes the body of the packet. Sec-ond, it
+ []
+
+
+Underfull \hbox (badness 3884) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 uses the game[]queue[]manager[]member vari-able to get
+ []
+
+
+Underfull \hbox (badness 3579) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 the game queue for the game type spec-i-fied in the
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 193--201
+\OT1/ptm/m/n/10 Find-GamePacket ob-ject. Third, if both the pre-vi-ous
+ []
+
+[3]
 ! Misplaced alignment tab character &.
-l.208 ...ype std::shared\textunderscore ptr<User>&
+l.242 ...ype std::shared\textunderscore ptr<User>&
                                                    aptly named user.
 ? 
-[3]
-Underfull \hbox (badness 4084) in paragraph at lines 230--233
+
+Underfull \hbox (badness 4084) in paragraph at lines 267--271
 []\OT1/ptm/m/n/10 The Death-matchGame-Queue::prepare[]game func-tion is
  []
 
-LaTeX Font Info:    Try loading font information for U+msa on input line 264.
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+<figures/ClientCommunication.png, id=16, 422.57875pt x 432.61626pt>
+File: figures/ClientCommunication.png Graphic file (type png)
+<use figures/ClientCommunication.png>
+Package pdftex.def Info: figures/ClientCommunication.png  used on input line 29
+4.
+(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<figures/HostCommunication.png, id=18, 422.57875pt x 432.61626pt>
+File: figures/HostCommunication.png Graphic file (type png)
+<use figures/HostCommunication.png>
+Package pdftex.def Info: figures/HostCommunication.png  used on input line 300.
+
+(pdftex.def)             Requested size: 252.00812pt x 170.71321pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4]
+LaTeX Font Info:    Try loading font information for U+msa on input line 313.
+ (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 264.
+LaTeX Font Info:    Try loading font information for U+msb on input line 313.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 299.
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 348.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [4]
+) [5 <./figures/ClientCommunication.png> <./figures/HostCommunication.png>]
 
-LaTeX Warning: File `fig1.png' not found on input line 404.
+LaTeX Warning: Command \textunderscore invalid in math mode on input line 386.
 
-
-! Package pdftex.def Error: File `fig1.png' not found: using draft setting.
-
-See the pdftex.def package documentation for explanation.
-Type  H <return>  for immediate help.
- ...                                              
-                                                  
-l.404 \centerline{\includegraphics{fig1.png}}
-                                             
-? 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 415.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 458.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 415.
- [5]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 458.
+ [6]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -562,16 +613,18 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[6] (./Matchmaking_Server.aux)
+[7
 
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+] (./Matchmaking_Server.aux)
+
+LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 4452 strings out of 492615
- 64104 string characters out of 6131390
- 140974 words of memory out of 5000000
- 8287 multiletter control sequences out of 15000+600000
+ 4462 strings out of 492615
+ 64430 string characters out of 6131390
+ 139013 words of memory out of 5000000
+ 8295 multiletter control sequences out of 15000+600000
  45569 words of font info for 91 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  41i,11n,35p,589b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
@@ -579,17 +632,16 @@ Here is how much of TeX's memory you used:
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
 f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
 fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8
-a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/urw/times/utmri8a.pfb>
-Output written on Matchmaking_Server.pdf (6 pages, 137812 bytes).
+pe1/public/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/pu
+blic/amsfonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/couri
+er/ucrr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/tex
+live/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Matchmaking_Server.pdf (7 pages, 152142 bytes).
 PDF statistics:
- 68 PDF objects out of 1000 (max. 8388607)
- 48 compressed objects within 1 object stream
+ 74 PDF objects out of 1000 (max. 8388607)
+ 50 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
- 1 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 11 words of extra memory for PDF output out of 10000 (max. 10000000)
 
