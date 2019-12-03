@@ -69,35 +69,104 @@ When I update this application in the future I will potentially add this feature
 The bulk of my time that I spent on the matchmaking server was on the TCPConnection class.
 This is due to many factors such as redesigns, updating call sequences, callbacks, and simply just the overall complexity of this component.
 The job of this component pretains to handling the communication with the client that allows them to connect to a game.
-It does so by sending packets of data that are detailed in particular format.
-The data in the packets are in JSON data format, which uses key-value pairs. 
-This has to be serialized before it is sent over the network and deserialized when it arrives to its destination.
-This works especially well since the data exchange is between the Video Game which is programmed in C# and the server which is programmed in C++ and there are libraries in both that support the use of this data format.
-The packets themselves were designed to be lightweight and easily extensible.
-While there are a many different packet types I created throughout this project, they all inherit from the parent class Packet.
-The Packet class has members for the header length, maximum body length, body length, a char array to store the data, packet type, functions to access these members, functions to decode and encode the header, and functions to encode and decode the body.
-The functions to encode and decode the body are pure virtual as to enforce the children classes to provide their own implementation to encode and decode the body.
-The reason for doing this is because the information contained in the body of a packet differs between packet types.
-While both the header and the body of a packet are stored in the same char array, they are separate entities.
-The header is what contains the amount of bytes the body of the packet holds.
-This is used to send variable sized packets and so that the receiver of a packet knows exactly how many bytes to read.
-The header, however, is always the same size.
-It currently is only 8 bytes however this and the maximum body length can be changed depending on the requirements of an inheriting child type. \par
 Now, after talking about the data format it uses for interoperability, I will begin explaining the actua job of the TCPConnection class.
 After the client has established a TCP connection with the Matchmaking server, a TCPConnection object is instantiated.
 Then the first thing the client will do is send a FindGamePacket.
-This is one of the packet types that inherit from the Packet superclass.
-All of the subclass types will have the naming scheme of "<packet type>Packet".
-The FindGamePacket object contains additional members for a unique identifier for the client and the game type the user wants to join.
-This may change in the future to include more information, but this suffices for now.
-Once the server begins to recieve the data for the FindGamePacketin an asynchronous read operation, it will first only read 8 bytes for the header.
-Then, if this is successful, it will decode the header and read the amoount of bytes specified for the body.
+Once the server begins to recieve the data for the FindGamePacket in an asynchronous read operation, it will first only read 8 bytes for the header.
+Then, if this is successful, it will decode the header and read the amount of bytes specified for the body.
 This is done by calling a function from the callback function that reads the header of the packet.
 This function called "TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscorebody" will initiate another asychronous read operation to read the body.
 Then once it is done reading the body, it will fire a callback that will add the user to a queue for the specified game type.
 The way the user is pushed on the queue is by first getting a shared pointer to the queue from a queue manager.
 Next, it will create a User object.
 Finally, the User object is pushed on the queue.
+
+\subsection{Packet}
+In the exchanging of information between independent applications there needs to be a uniform way for the to pass and read message in support of interoperability. 
+Such a requirement requires an agreement between the communicating applications such as them both following a specific protocol.
+Due to this, I created my own packet types that the front-end video game programmed in C# can use to communicate with the backend matchmaking server programmed in C++.  
+The packets carry data that is created by one side and  consumed by the other side.
+The data in the packets are in JSON data format, which uses key-value pairs.  
+This has to be serialized before it is sent over the network and deserialized when it arrives to its destination.
+The reason I chose this data format is because there are libraries in both C# and C++ that support the use of this data format and it is rather ease of use of JSON.
+
+The packets themselves were designed to be lightweight and easily extensible.
+There are a many different packet types I created throughout this project; I will give a description of all of them later on in this section.
+They all inherit from the parent class Packet and have the naming scheme of "<packet type>Packet".
+The Packet class has member variables for the header length, maximum body length, body length, a char array to store the data, and a packet type.
+The header length is the fixed amount of bytes contained in the header.
+The maximum body length is the upper limit for the amount of bytes that can be contained in  a packet.
+The body length is the amount of bytes contained in the body.
+The data char array is where the header and body are actually stored.
+This is also what is actually send over the network when communicating.
+The header is the first 8 character of the data array and it contains the body length.
+The reason for having a header store this information is because the body of a packet differs between packet types.
+Furthermore, it allows for variable length packets which thus provides more granularity of the data sent and reduces wasted bandwidth consumption.
+The body of the packet is what contains the actual payload of the packet: the serialized JSON data.
+This JSON data differs between packet types; however, all of them contain the key-value pair for the packet type.
+
+The Packet class also has member functions to access its protected members, to decode and encode the header, to decode the body, and to encode both the header at once body.
+The functions to access the protected members include data(), body(), length(), body\textunderscore length(), and packet\textunderscore type().
+All of these are pretty much self explanitory given their names.
+The only interesting one is Packet::body() which returns data\textunderscore + header\textunderscore length.
+The reason for doing this is because of pointer arithmetic in C++, this will return a pointer to the first char in the body.
+
+The function Packet::set\textunderscore body\textunderscore length is used to set the body length of the packet, but will cap it at the maximum body length if an attempt is made to exceed this upper limit.
+The function Packet::encode\textunderscore header() is used to serialize the packet header.
+First, it creates a temporary char array called header of size header length + 1.
+Then, It then writes the body length to this char array,
+Finally, it copies the bytes in this char array to the data member variable.
+
+The function Packet::decode\textunderscore header is what is used to decode the serialized header that is stored in the member data array.
+It return a boolean indicated if the it was successful in decoding the header.
+First, it creates a temporary char array called header of size header length + 1.
+Then, it copies the first 8 bytes of the data array into the header array.
+Next, it sets the body length to the integer represented by this array of chars.
+Finally, if the body length is greater than the max body length it sets body length equal to 0 and returns false.
+If the body length is less than or equal to the max body length it returns true.
+
+As you may notice I have yet to explain the functions for decoding and encoding the body.
+This is because they are pure virtual as to enforce the children classes to provide their own implementation to encode and decode the body. 
+The reason for doing this is because the information contained in the body of a packet differs between packet types.
+Now I shall explore the classes that inherit from Packet.
+
+The class FindPacket is what is used when a user wants to join a game.
+It contains two additional members variables for a unique identifier for the client and the game type the user wants to join.
+It also has additional member function for accessing the members and the implementation details for encode and decode\textunderscore body.
+The FindGamePacket::encode function is used to serialize the member variables of the class and the header so it can be sent over the network.
+First, it creates a JSON data type.
+I am using a library called nlohmann to achieve this.
+Second, It sets the key-value pairs for the packet type, user ID, and game type.
+Third, it serializes the JSON data and stores it in a string called find\textunderscore game\textunderscore str.
+Fourth, it calls set\textunderscore body\textunderscore length with the size of find\textunderscore game\textunderscore str as its argument.
+Fifth, it encodes the header.
+Finally, it copies find\textunderscore game\textunderscore str to the body of the packet.
+
+The  FindGamePacket::decode\textunderscore body function is what is used to decode the body for use of the receiver of the packet.
+First, it deserializes the data by parsing it into a JSON object called find\textunderscore game\textunderscore json.
+Second, it sets the member variables to the values of find\textunderscore game\textunderscore json.
+
+For this instance I gave an explanation of Packet::encode and Packet::decode\textunderscore body; however. for the rest of the packet types I will not give one as the implementation is extremely similar.
+The only differences include getting and setting the unique member variables for each packet types.
+
+
+The JoinPacket class is provided by a host a game session to client users whom want to join the game. 
+It contains information required by the users to join said game.
+The two member variables it contains is the IP address of the host and the PID of the game session.
+
+The HostPacket class is used by the GameQueue to tell a user to host a game.
+The only member variable it contains is the game type the user needs to create a session of.
+
+The AckPacket class is used to keep the TCP connection alive while the users is waiting to join or host a game.
+I will give more details to this later and why it is necessary in the TCPConnection section.
+It contains member variables for the ack type,
+This ack type is of type AckType which is an enum defined in the ack\textunderscore type.hpp file.
+It currently only has two possible values None and Error.
+The ack\textunderscore type.hpp file also includes a class called ack\textunderscore error.
+This is used when the value of ack type is set to Error.
+
+Nonetheless that finishes the discussion on the different packet types and their individual usage.
+I will go into more detail later on how each one is used in the matchmaking server setting.
 
 \subsection{Game Queue}
 Before a user is able to join a game session, they need to wait their turn so that everyone who came in before them has the chance to join a game. 

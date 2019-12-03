@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  3 DEC 2019 04:28
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  3 DEC 2019 06:32
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -486,50 +486,52 @@ G,.JBIG2,.JB2,.eps]
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
-! You can't use `macro parameter character #' in horizontal mode.
-l.75 ...n the Video Game which is programmed in C#
-                                                   and the server which is p...
+! Undefined control sequence.
+l.78 ...ind\textunderscore game\textunderscorebody
+                                                  " will initiate another as...
 
 ? 
 [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-! Undefined control sequence.
-l.96 ...ind\textunderscore game\textunderscorebody
-                                                  " will initiate another as...
+! You can't use `macro parameter character #' in horizontal mode.
+l.87 ... the front-end video game programmed in C#
+                                                   can use to communicate wi...
 
 ? 
-! Misplaced alignment tab character &.
-l.139 ...ype std::shared\textunderscore ptr<User>&
-                                                   aptly named user.
+! You can't use `macro parameter character #' in horizontal mode.
+l.91 ... is because there are libraries in both C#
+                                                   and C++ that support the ...
+
 ? 
 [2]
-Underfull \hbox (badness 4084) in paragraph at lines 161--164
+! Misplaced alignment tab character &.
+l.208 ...ype std::shared\textunderscore ptr<User>&
+                                                   aptly named user.
+? 
+[3]
+Underfull \hbox (badness 4084) in paragraph at lines 230--233
 []\OT1/ptm/m/n/10 The Death-matchGame-Queue::prepare[]game func-tion is
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-LaTeX Font Info:    Try loading font information for U+msa on input line 195.
-
+LaTeX Font Info:    Try loading font information for U+msa on input line 264.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 195.
+LaTeX Font Info:    Try loading font information for U+msb on input line 264.
 
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [3]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 230.
+)
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 299.
 
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
 ) [4]
 
-LaTeX Warning: File `fig1.png' not found on input line 335.
+LaTeX Warning: File `fig1.png' not found on input line 404.
 
 
 ! Package pdftex.def Error: File `fig1.png' not found: using draft setting.
@@ -538,17 +540,17 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.335 \centerline{\includegraphics{fig1.png}}
+l.404 \centerline{\includegraphics{fig1.png}}
                                              
 ? 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 346.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 415.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 346.
-
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 415.
+ [5]
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -560,7 +562,7 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[5] (./Matchmaking_Server.aux)
+[6] (./Matchmaking_Server.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
@@ -568,7 +570,7 @@ LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 Here is how much of TeX's memory you used:
  4452 strings out of 492615
  64104 string characters out of 6131390
- 138974 words of memory out of 5000000
+ 140974 words of memory out of 5000000
  8287 multiletter control sequences out of 15000+600000
  45569 words of font info for 91 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -584,10 +586,10 @@ a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/sha
 re/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/tex
 mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
 ype1/urw/times/utmri8a.pfb>
-Output written on Matchmaking_Server.pdf (5 pages, 133316 bytes).
+Output written on Matchmaking_Server.pdf (6 pages, 137812 bytes).
 PDF statistics:
- 65 PDF objects out of 1000 (max. 8388607)
- 46 compressed objects within 1 object stream
+ 68 PDF objects out of 1000 (max. 8388607)
+ 48 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 
