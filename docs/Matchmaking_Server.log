@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  2 DEC 2019 03:18
+This is pdfTeX, Version 3.14159265-2.6-1.40.19 (TeX Live 2019/dev/Debian) (preloaded format=pdflatex 2019.12.2)  3 DEC 2019 01:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -491,26 +491,78 @@ l.75 ...n the Video Game which is programmed in C#
                                                    and the server which is p...
 
 ? 
-LaTeX Font Info:    Try loading font information for U+msa on input line 85.
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
-File: umsa.fd 2013/01/14 v3.01 AMS symbols A
-)
-LaTeX Font Info:    Try loading font information for U+msb on input line 85.
-
-(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
-File: umsb.fd 2013/01/14 v3.01 AMS symbols B
-) [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
+[1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}
 
 
 ]
-LaTeX Font Info:    Try loading font information for OT1+pcr on input line 120.
+! Undefined control sequence.
+l.96 ...ind\textunderscore game\textunderscorebody
+                                                  " will initiate another as...
 
+? 
+! Missing $ inserted.
+<inserted text> 
+                $
+l.105 ... std::queue that simply stores std::weak_
+                                                  ptr<User> types. The reaso...
 
-(/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+? 
+LaTeX Font Info:    Try loading font information for U+msa on input line 105.
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
+File: umsa.fd 2013/01/14 v3.01 AMS symbols A
+)
+LaTeX Font Info:    Try loading font information for U+msb on input line 105.
+
+(/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
+File: umsb.fd 2013/01/14 v3.01 AMS symbols B
+)
+
+LaTeX Warning: Command \textquoteright invalid in math mode on input line 105.
+
+! Missing $ inserted.
+<inserted text> 
+                $
+l.107 
+      
+? 
+
+Overfull \hbox (8085.43022pt too wide) in paragraph at lines 105--107
+\OML/cmm/m/it/10 types:ThereasonitstoresthistypeandnotaUserdirectlyisbecauseaco
+nnectionmaygetdroppedwhileauserisinqueue:Ifthisoccurs; thenthequeuewillbeableto
+correctlyverifythisbycheckingiftheUserobjectthepointerpointstoisexpiredbeforeit
+usesit:Theusermapisusedtokeeptrackoftheamountoftimesauserhasbeenaddedtoaqueue:T
+his; however; isnottopreventduplicateentriesinthequeue; buttomakesuretheuser[]s
+placeinthequeueisupdated:Forexample; onceagameisinitiatedandauserispoppedfromth
+equeueitwillneedtoverifyitscountisequalto\OT1/cmr/m/n/10 1\OML/cmm/m/it/10 toad
+ditthegamesession:Ifitscountinthismapsisgreaterthan\OT1/cmr/m/n/10 1\OML/cmm/m/
+it/10 ; thenitwilldecrementthiscountandgoontothenextuserinthequeue:Ifitscountis
+\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 thenitassumedthisuserwaserasedfromthequeueand
+itdoesnothing:Youmightbethinkingwhatisthepointofallthisandwhynotjustremovetheus
+erfromthequeuewhenaduplicateisdetectedorifaneraseiscalled\OT1/cmr/m/n/10 ?\OML/
+cmm/m/it/10 InitiallyIdidthinkaboutdoingthis:However; formanyreasonsIdecidedaga
+instit:Forone; onaverageittakesO\OT1/cmr/m/n/10 (1)\OML/cmm/m/it/10 timetolooku
+panelementinamap; whileittakesO\OT1/cmr/m/n/10 (\OML/cmm/m/it/10 n\OT1/cmr/m/n/
+10 )\OML/cmm/m/it/10 toeraseanelementfromaqueue:Soitisfaster:Additionally; inth
+efuturewhenIintroducemultithreadingtothisapplication; raceconditionswillbeaprob
+lemaswell:IfIwastoeraseanelementfromthequeuewhileconcurrentlytryingtopopaneleme
+ntoutundefinedbehaviormayoccur:Topreventthis; thequeuewouldhavetobelockeduntilt
+heerasefinishes:Insteadasimpleupdatetotheusermapwillnoteffectthequeueoperation:
+Theworstcasescenarioisauserisaddedtoagamebeforetheyshouldbebecausetheywereremov
+edfromthequeuebeforetheusermapcouldupdatetheircount:Thisofcoursecouldalsobefixe
+dbylockingthequeue; butwouldtakelesstimeonaverageduetothesmallertimecomplexity:
+Thecurrentqueuesizeisusedtokeeptrackoftheamountofuniqueusersinthequeue:Thiswill
+alwaysbelessthanorequaltotheactualqueuesizeastherecouldbeduplicateusersintheque
+ue:$ 
+ []
+
+[2]
+LaTeX Font Info:    Try loading font information for OT1+pcr on input line 166.
+
+ (/usr/share/texlive/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 File: ot1pcr.fd 2001/06/04 font definitions for OT1/pcr.
-) [2]
+) [3]
 
-LaTeX Warning: File `fig1.png' not found on input line 225.
+LaTeX Warning: File `fig1.png' not found on input line 271.
 
 
 ! Package pdftex.def Error: File `fig1.png' not found: using draft setting.
@@ -519,17 +571,17 @@ See the pdftex.def package documentation for explanation.
 Type  H <return>  for immediate help.
  ...                                              
                                                   
-l.225 \centerline{\includegraphics{fig1.png}}
+l.271 \centerline{\includegraphics{fig1.png}}
                                              
 ? 
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 236.
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 282.
 
 (/usr/share/texlive/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10> not available
-(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 236.
- [3]
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 282.
+
 
 ** Conference Paper **
 Before submitting the final camera ready copy, remember to:
@@ -541,36 +593,35 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the appropriate paper size.
 
-[4
-
-] (./Matchmaking_Server.aux)
+[4] (./Matchmaking_Server.aux)
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
  ) 
 Here is how much of TeX's memory you used:
- 4451 strings out of 492615
- 64086 string characters out of 6131390
- 138974 words of memory out of 5000000
- 8286 multiletter control sequences out of 15000+600000
+ 4452 strings out of 492615
+ 64104 string characters out of 6131390
+ 139974 words of memory out of 5000000
+ 8287 multiletter control sequences out of 15000+600000
  45569 words of font info for 91 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 41i,11n,35p,589b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 41i,11n,35p,2363b,277s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texlive/texm
-f-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/
-fonts/type1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/ty
-pe1/public/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8
-a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/sha
-re/texlive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/tex
-mf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/t
-ype1/urw/times/utmri8a.pfb>
-Output written on Matchmaking_Server.pdf (4 pages, 122400 bytes).
+f-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/share/texlive/texmf-dist/
+fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/share/texlive/texmf-dist/fonts/t
+ype1/public/amsfonts/cm/cmr6.pfb></usr/share/texlive/texmf-dist/fonts/type1/pub
+lic/amsfonts/cm/cmr7.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsf
+onts/cm/cmsy10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/c
+m/cmsy7.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb><
+/usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></usr/share/texl
+ive/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/share/texlive/texmf-dist
+/fonts/type1/urw/times/utmr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/ur
+w/times/utmri8a.pfb>
+Output written on Matchmaking_Server.pdf (4 pages, 146570 bytes).
 PDF statistics:
- 62 PDF objects out of 1000 (max. 8388607)
- 44 compressed objects within 1 object stream
+ 66 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
  0 named destinations out of 1000 (max. 500000)
  1 words of extra memory for PDF output out of 10000 (max. 10000000)
 

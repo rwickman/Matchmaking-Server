@@ -61,7 +61,7 @@ This is the point in which the user will first connect to the server.
 The server is listening on a specified port and accepts incoming requests when the arrive. 
 It asynchronously accepts the requests then initiates a callback that handles setting up the TCP socket to the client.
 This allows for multiple users to connect to the server at once. 
-	The socket is constructed by initializing a TCPConnection object that will handle the rest owf the users communication to find a game.
+The socket is constructed by initializing a TCPConnection object that will handle the rest of the users communication to find a game.
 While I did consider creating a new thread for each connection, I did not due to time constraints and not wanting to deal with the complexity of adding multithreading such as locking resources, race conditions, ect..
 When I update this application in the future I will potentially add this feature.
 
@@ -93,11 +93,27 @@ This may change in the future to include more information, but this suffices for
 Once the server begins to recieve the data for the FindGamePacketin an asynchronous read operation, it will first only read 8 bytes for the header.
 Then, if this is successful, it will decode the header and read the amoount of bytes specified for the body.
 This is done by calling a function from the callback function that reads the header of the packet.
-This function called "do_read_find_game_body" will initiate another asychronous read operation to read the body.
-The once it is done reading the body, it will fire a callback that will add the user to a queue for the specified game type.
+This function called "TCPConnection::do\textunderscore read\textunderscore find\textunderscore game\textunderscorebody" will initiate another asychronous read operation to read the body.
+Then once it is done reading the body, it will fire a callback that will add the user to a queue for the specified game type.
 The way the user is pushed on the queue is by first getting a shared pointer to the queue from a queue manager.
 Next, it will create a User object.
 Finally, the User object is pushed on the queue.
+
+\subsection{Game Queue}
+
+\subsection{User}
+The User class was created so that an item could be added to the game queue that is representative of a unique user.
+Additionally, it contains smart pointers that contain references for callback functions that are used to allow the user to join or host a game.
+Originally I planned on having a reference to the TCPConnection object in the User class.
+However, the problem to this is it would create a circular dependency with the GameQueue class.
+This is because the GameQueue class includes the header for the User class declarations and the TCPConnection includes the header for the GameQueue class declarations.
+So, instead the User has reference to the functions "TCPConnection::host\textunderscore game and "TCPConnection::host\textunderscore game" to prevent such a circular dependency, but still have the necessary functionality.
+This also provides more control for the TCPConnection to decide and handle what exact functions gets called.
+In the future, this may prove helpful if I require different users to behave differently when joining or hosting a game.
+One such instance would be if a private game is being created where only select users are able to join.
+This join callback could provide additional authentication statements to verify a user can join a game before making a failed attempt and the TCPConnection closing thinking the user found a game.
+
+
 
 
 \section{Prepare Your Paper Before Styling}
