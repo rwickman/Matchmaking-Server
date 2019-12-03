@@ -302,6 +302,111 @@ This join callback could provide additional authentication statements to verify 
 \label{fig}
 \end{figure}
 
+\section{The Video Game}
+In this section I will give an the implementation details of the video game itself, the client-side mathcmaking, and how I will implement the in game peer-to-peer communication in the future.
+\subsection{Gameplay}
+The video game that the matchmaking system will support is a simple 3D first-person sword fighting game.
+It was created using the Unity game engine and programmed in C#.
+Note in the previous sections I used  client and user interchangeably, as those are both common terms to describe the person asking for a service or interacting with a service in the networking field.
+In the video game development field it more appropriate to describe this person as a player.
+There are a few different inputs a player can do to interact with the environment and other players.
+You can move your player character in the game by using the arrows keys or WASD and use the mouse to look around or change your direction while moving.
+You can also attack/swing the sword by clicking the left mouse button.
+
+The way the player moves is by applying a force on the Rigidbody component attached the the player GameObject.
+The Rigidbody component  is something built into Unity that allows for adding physical force  to an object rather easy, as opposed to building an entire pysichs system yourself.
+In my game, force it applies is based on the input and speed of the character.
+The direction the player wants to move is given by the arrows keys.
+This is restricted to be in the x and z axis, as the y axis corresponds to the character floating up or down.
+This direction vector is then normalized to be a unit vector and multiplied by the character’s speed and Time.delataTime (e.g., direction * speed * Time.deltaTime).
+The speed is a scalar value, not a vector, to denote the magnitude the player should move in a particular direction.
+Time.deletaTime is the completion time in seconds since the last frame.
+It is used to keep the movement of the character frame independent and instead time dependent.
+The reason this occurs is because the time in between frames is not always constant.
+
+As written a second ago, the player can use the mouse to change the direction the character is looking.
+This is done by changing the position and rotation of the Camera GameObject
+The Camera is what  updates what the player sees on their physical screen.
+At the beginning of the game, the Camera’s position is subtracted by the player character’s position and stored in a Vector3 variable called offset.
+Then every frame, assume there are roughly 30 or 60 frames per second, the Camera’s position is set to the player character’s position plus this offset.
+The math for doing this is rather simple: say A is the Camera’s position, B is the character’s position and C is the offset then A - B = C and B + C= A.
+However, in the actually implementation I added linear interpolation to this expression as well to create a small delay between the movement of the character’s position and the Camera following.
+So, how about the Camera’s rotation?
+For example, how does the player look up and down in game?
+The mouse x input is set as the yaw and the mouse y input is set as the pitch.
+This pitch is clamped to a range of angles [-60, 50] to prevent the player from flipping the Camera upside down (e.g., if you were change pitch 180 degrees from its normal rotation range).
+
+The character is able to left click to attack with there attached sword.
+The swords has an attached collider, but it does not detect collisions.
+Instead it is trigger collider, it detects when another collider, such as an enemy’s collider, enters.
+The trigger collider is only activated once the player attacks and is deactivated once the attack is done.
+This is to prevent damage being cause be just touching another character with the sword as opposed to attacking.
+If this occurs, damage is inflicted to the enemy.
+The enemy character can only be damaged once per attack.
+This is enforced by keeping a HashSet that is used to identify if a character was already damaged in this attack.
+It is reset (i.e., set to an empty HashSet) at the end of the character’s attack.
+There is a delay between the the players ability to attack as to reduce the spamming of attacking.
+
+Each character has a fixed amount of health.
+When damage is inflicted, the health is reduced by the amount the sword inflicted.
+If a character’s health is less than or equal to 0 then the character’s GameObject is destroyed (i.e., deleted from memory).
+
+\subsection{Client-Side Matchmaking}
+Although the video game has a lot of moving components that must interact with one another, is still just one machine doing all the processing.
+Thus, multiplayer capability needs to be added to introduce the distributed system aspect.
+In previous sections I described how the Matchmaking server looks from the server-side, I will now explain the client-side.
+Similarly to the server-side, the client-side performs a series of asynchronous calls to get the user into a game session.
+
+I created a basic Main Menu in Unity with  the capability to find a game by simply clicking the find game button.
+That is all the player sees so distribution transparency is present in this regard.
+After the button is clicked a TCP socket and an asynchronous connect is started.
+Currently, the IP address is fixed for the server, but in the future it will use a hostname and then resolve it to a IP address as to provide replication and relocation transparency.
+Once the client is connected, the connect callback is called.
+The connect callback calls another method called SendFindGame.
+The SendFindGame method creates a FindGamePacket and sends it through the newly established connection.
+So, how am I sending a FindGamePacket when it is programmed in C++ and this is in C#?
+Simple, just creating a JSON object that has the same key-value pairs and serializing it.
+Once FindGamePackt is successfully sent, the callback handler of this send is fired and calls ReceiveHostOrJoin.
+The method ReceiveHostOrJoin asynchronously reads the next packet.
+In its callback, the data of the packet is passed.
+If the packet type is a JoinPacket, an AckPacket is sent to the server then the client attempts to join the game session.
+If the packet type is a HostPacket, then a AckPacket is sent to the server,  the game is created, then the JoinPacket is asynchronously sent back to the server.
+
+\subsection{In Game Communication}
+Once the players are actually in the game session, one player will act as the server and the rest will act as the clients.
+This is a peer-to-peer system that allows for scalability and is cheap on my end as I will not have to pay for a dedicated server.
+However this can impose higher latency on the players and may affect their experience.
+Thus, in the future this may change depending on the player’s feedback of the system.
+
+They will all communicate using UDP as this a real time application and is time sensitive.
+Also, some lose of packets is tolerable.
+For example, if a different player’s character walks to a new location in a frame and the packet is dropped this isn’t a game breaking error.
+It is only micromential change to the game state and should not have serious repercussions as there are 30 to 60 frames per second.
+The only effect this would have is the player movement would not look as smooth as if all the packets were sent.
+As long as majority of the packet make it through then a few dropped packets should not have a huge effect on the overall gameplay.
+Albeit, there may be times when some reliable data transfer is required.
+This will be done on demand and be limited to when it is only necessary such as when a player is joining a game or critical information about the game state needs to be received by all clients.
+Also note that I did not get around to implementing this part, unlike all the rest of the components and sections, so for now this is merely an idea based on what I have studied from other similar systems.
+
+When a player creates a game session it will act as the host and the server for the game.
+For another player to join, they will have to send a request the game’s host.
+If the host (i.e., server) accepts, then the player may join the game.
+There many cases when the server will decline the client request such as when it is private game, the game session is full, or the game requires authentication and the client did not have the correct authorization credentials.
+Once the player is in the game, all current players will receive a notice that a new player has joined.
+This packet will need to have reliable data transfer as it could cause serious problems if some players are not visible to everyone.
+When a player receives this notice, it will create a GameObject for this player in its local environment.
+This GameObject will be updated every time its associated client performs some type of action.
+When a user does perform an action it will go through the server who will then distribute the action to all active clients.
+
+
+However, instead of everyone communicating through the host in a star topology, they could communicate amongst one another in mesh topology.
+Of course this would add extra complexity to the entire system.
+It could potentially reduce the overall latency time as it will be decentralized and not rely entirely one the bottleneck for the host.
+The host could be given the job of only updating the players when someone else joins, a new game is starting, and other simple game manager tasks
+The player could then communicate with one another when they update an perform an action.
+This could also be proximity based (i.e., only other character within a certain distance will receive a player action update.)
+
+Nonetheless, I will need to do a lot of research in to find the best solution for the in game communication.
 
 \section{Prepare Your Paper Before Styling}
 Before you begin to format your paper, first write and save the content as a 
