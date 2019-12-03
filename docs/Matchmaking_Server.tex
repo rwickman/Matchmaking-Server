@@ -87,7 +87,7 @@ Now, after talking about the data format it uses for interoperability, I will be
 After the client has established a TCP connection with the Matchmaking server, a TCPConnection object is instantiated.
 Then the first thing the client will do is send a FindGamePacket.
 This is one of the packet types that inherit from the Packet superclass.
-All of the subclass types will have the naming scheme of "XXXPacket".
+All of the subclass types will have the naming scheme of "<packet type>Packet".
 The FindGamePacket object contains additional members for a unique identifier for the client and the game type the user wants to join.
 This may change in the future to include more information, but this suffices for now.
 Once the server begins to recieve the data for the FindGamePacketin an asynchronous read operation, it will first only read 8 bytes for the header.
@@ -100,6 +100,75 @@ Next, it will create a User object.
 Finally, the User object is pushed on the queue.
 
 \subsection{Game Queue}
+Before a user is able to join a game session, they need to wait their turn so that everyone who came in before them has the chance to join a game. 
+This is why I went with a FIFO data structure such as a queue to implement this feature. 
+However, in a video game with multiple game types, a user may only want to join a specific one.
+Thus, it would not make sense for users looking for different game types to be in the same queue.
+My solution to these requirements is to have a GameQueue superclass that is inherited from by all queues handling the users of a specific game type. \par
+This class has members variables for the queue that stores weak pointers to Users, an unordered user map, the game type of this queue, the minimum and maximum size of a game session, the current queue size, and a boolean flag for if a game is currently getting prepared.
+The queue is a std::queue that simply stores std::weak\textunderscore ptr<User> types. The reason it stores this type and not a User directly is because a connection may get dropped while a user is in queue.
+If this occurs, then the queue will be able to correctly verify this by checking if the User object the pointer points to is expired before it uses it.
+The user map is used to keep track of the amount of times a user has been added to a queue.
+This, however, is not to prevent duplicate entries in the queue, but to make sure the user’s place in the queue is updated.
+For example, once a game is initiated and a user is popped from the queue it will need to verify its count is equal to 1 to add it the game session.
+If its count in this maps is greater than 1, then it will decrement this count and go on to the next user in the queue.
+If its count is 0 then it assumed this user was erased from the queue and it does nothing.
+You might be thinking what is the point of all this and why not just remove the user from the queue when a duplicate is detected or if an erase is called?
+Initially I did think about doing this.
+However, for many reasons I decided against it.
+For one, on average it takes O(1) time to look up an element in a map, while it takes O(n) to erase an element from a queue.
+So it is faster.
+Albeit, it does add extra space complexity of O(n) so there is a bit of a trade off.
+Additionally, in the future when introduce multithreading to this application, race conditions will begin to be an issue.
+If I was to erase an element from the queue while concurrently trying to pop an element out undefined behavior may occur.
+To prevent this, the queue would have to be locked until the erase finishes.
+Instead a simple update to the user map will not effect the queue operation.
+The worst case scenario is a user is added to a game before they should be because they were removed from the queue before the user map could update their count.
+This of course could also be fixed by locking the queue, but would take less time on average due to the smaller time complexity.
+The current queue size is used to keep track of the amount of unique users in the queue.
+This will always be less than or equal to the actual queue size as there could be duplicate users in the queue.
+The game type of the game queue is represented as an enum value.
+I have a file, game\textunderscore type.hpp, specifying all the possible game types as an enum. \par
+There are also several member functions in the GameQueue class: push, pop, erase, prepare\textunderscore game, and start\textunderscore game.
+They are all pure virtual function as it is up to the inheriting class to define their behavior.
+This of course makes the GameQueue class abstract, and thus I only have the GameQueue header and not associated cpp implementation file.
+Currently, due to time constraints,  I only have one game type called deathmatch.
+Its class is aptly named DeathmatchGameQueue.
+All future GameQueue children will follow this naming convention of "<game type>GameQueue".
+This class has same the members as the GameQueue superclass, albeit, with its own unique implementation of member functions of which I will explain in depth. \par
+The DeathmatchGameQueue::push function has a single parameter of type std::shared\textunderscore ptr<User>& aptly named user.
+This is what is being requested to be added to the queue.
+First, it will see if the user has already been added to the queue by checking if the user ID is in the user map.
+If it is not, it is inserted in the user map with a count of 1 and increment the queue size.
+If it is in the queue, but its count is less than 0 meaning its been erased from the queue but not yet popped off, then it will set its count to 1 and increment the queue size.
+If it is already in the queue and its count is greater than 1 then it will only increment its count. 
+After checking its count, the user is added to the queue.
+Finally, if with this added users queue size made it large enough to start a game and a game is already not getting prepared it will call DeathmatchGameQueue::prepare\textunderscore game. \par
+The DeathmatchGameQueue::pop function is a little more complicated than I initially hoped.
+This is due to the unforeseen complexity of having duplicates in the queue and the potential of having a user whose connection is closed in the queue.
+When the pop function is called, it will first check if the current queue size is less than or equal to 0.
+If it is, it will return a default weak\textunderscore ptr that points at nothing, so pretty much just null.
+Then, if queue size is greater than 0, it will keep trying to get a user off the queue until it find a user that still has an active connection.
+If no such user is found it will return weak\textunderscore ptr<User>().
+Now, once a user is found, it will check if the user is duplicated in the queue.
+If it is, it will pop out users out of the queue until it finds one that is not duplicated.
+When duplicates are removed in this way, their count is decremented.
+Finally, once a nonduplicated, alive user is found it will erase it from the user map, decrement the queue size, and return a weak pointer to the user. \par
+The DeathmatchGameQueue::erase function is rather simple.
+It first checks if the user is in the user map.
+If it is, then it is removed from the user map and the queue size is decremented.
+This operation is again O(1) on average rather than O(n) and thus the erase function becomes O(1) on average. \par
+The DeathmatchGameQueue::prepare\textunderscore game function is what I said earlier is called once the queue reaches a certain minimum size.
+Firstly, it will set a boolean flag to true to indicate a game is getting prepared.
+Secondly, the user in the front is popped off the queue.
+Thirdly, it will call the host\textunderscore callback function on the user passing in a reference to DeathmatchGameQueue::start\textunderscore queue function and the game type of this queue. \par
+The DeathmatchGameQueue::star\textunderscore game function is used as a callback that is fired by the TCPConnection object of a host of a game once it is ready for users to join the game it is hosting.
+It has a single parameter for a JoinPacket.
+First, the packet is encoded, which serializes the packet to get ready to be sent over the wire to the user.
+Then, the it will enter in a while loop that will continue as long as a maximum amount of users have been added or the queue is empty.
+Next, inside this loop a user is popped of this queue, the current game size is incremented, and the join\textunderscore callback on the user is called with the JoinPacket object passed as an argument.
+Finally, the preparing game flag is set to false. \par
+Now that wraps up the implementation and design of the game queue.
 
 \subsection{User}
 The User class was created so that an item could be added to the game queue that is representative of a unique user.
